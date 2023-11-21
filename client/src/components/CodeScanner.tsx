@@ -1,69 +1,89 @@
 import { useEffect, useState } from "react";
-import { Html5Qrcode, Html5QrcodeCameraScanConfig } from "html5-qrcode";
-import { QrcodeErrorCallback, QrcodeSuccessCallback } from "html5-qrcode/esm/core";
+import { Html5Qrcode } from "html5-qrcode";
+import { Html5QrcodeResult } from "html5-qrcode/esm/core";
+import useCamera from "@hooks/useCamera";
+import { twMerge } from "tailwind-merge";
 
 interface CodeScannerProps {
     cameraId: string;
-    config?: Html5QrcodeCameraScanConfig;
-    qrCodeSuccessCallback: QrcodeSuccessCallback;
-    qrCodeErrorCallback: QrcodeErrorCallback;
-    onStartError: (error: unknown) => void;
+    aspectRatio?: number;
+    onQRCodeScan: (result: Html5QrcodeResult) => void;
+    showFilter: boolean;
 }
 
 export default function CodeScanner({
     cameraId,
-    config,
-    qrCodeErrorCallback,
-    qrCodeSuccessCallback,
-    onStartError: handleStartError,
+    onQRCodeScan,
+    showFilter,
 }: CodeScannerProps) {
     const [containerId] = useState(crypto.randomUUID());
 
+    const { videoRef, canvasRef } = useCamera({
+        cameraId,
+        idealWidth: undefined,
+        idealHeight: 1920,
+        filter: "contrast(250%) brightness(75%)",
+    });
+
     useEffect(() => {
-        let html5Qrcode: Html5Qrcode;
-        let startPromise: Promise<null>;
-
+        let scanInterval: NodeJS.Timeout;
         const init = async () => {
-            html5Qrcode = new Html5Qrcode(containerId, false);
+            const html5Qrcode = new Html5Qrcode(containerId, false);
 
-            try {
-                startPromise = html5Qrcode.start(
-                    cameraId,
-                    config,
-                    qrCodeSuccessCallback,
-                    qrCodeErrorCallback
-                );
-                await startPromise;
-            } catch (error) {
-                console.error(error);
-                handleStartError(error);
-            }
+            const scanForQR = () => {
+                const canvas = canvasRef.current;
+                if (!canvas) return;
+                canvas.toBlob(async (blob) => {
+                    if (!blob) return;
+                    try {
+                        const result = await html5Qrcode.scanFileV2(
+                            new File([blob], "canvasSnapshot")
+                        );
+                        onQRCodeScan(result);
+                    } catch (error) {
+                        /* empty */
+                    }
+                });
+            };
+
+            scanInterval = setInterval(scanForQR, 100);
         };
 
         init();
 
         return () => {
-            startPromise
-                .then(() => html5Qrcode?.stop())
-                .catch(() => {
-                    /** empty */
-                });
+            clearInterval(scanInterval);
         };
-    }, [
-        cameraId,
-        config,
-        containerId,
-        handleStartError,
-        qrCodeErrorCallback,
-        qrCodeSuccessCallback,
-    ]);
+    }, [canvasRef, containerId, onQRCodeScan]);
 
     return (
-        <div>
+        <div className="h-full">
+            <div className="relative h-full">
+                <video
+                    ref={videoRef}
+                    autoPlay
+                    muted
+                    playsInline
+                    className={twMerge(
+                        "absolute w-full h-full object-cover",
+                        showFilter ? "invisible" : "visible"
+                    )}
+                />
+                <canvas
+                    ref={canvasRef}
+                    className={twMerge(
+                        "absolute w-full h-full object-cover",
+                        showFilter ? "visible" : "invisible"
+                    )}
+                />
+            </div>
+
             {/* Scanner Element  */}
-            <div id={containerId} />
+            <div id={containerId} hidden />
         </div>
     );
 }
 
-CodeScanner;
+CodeScanner.defaultProps = {
+    showFilter: false,
+};

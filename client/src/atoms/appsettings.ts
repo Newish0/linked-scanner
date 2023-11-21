@@ -1,4 +1,5 @@
 import { Device, P2P_ID_PREFIX, LinkedDevice } from "@type/device";
+import { randomDeviceId } from "@utils/device";
 import { generateAdjNounPair } from "@utils/wordGenerator";
 import { atom, useAtom } from "jotai";
 
@@ -16,7 +17,7 @@ const getInitialAppSettings = () => {
     const defaultSettings: AppSettings = {
         thisDevice: {
             createdAt: new Date(),
-            id: `${P2P_ID_PREFIX}-${crypto.randomUUID()}`,
+            id: `${P2P_ID_PREFIX}-${randomDeviceId()}`,
             name: generateAdjNounPair(),
         },
         linkedDevices: [],

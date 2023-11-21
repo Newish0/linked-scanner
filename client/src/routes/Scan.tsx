@@ -21,8 +21,6 @@ export default function Scan() {
     const [hasStartError, setStartError] = useState(false);
     const [containerAspectRatio, setContainerAspectRatio] = useState<number>();
 
-
-
     // Set last used camera if saved
     useEffect(() => {
         const lastUsedCamera = cameras?.find((cam) => cam.id === appSettings.lastUsedCameraId);
@@ -74,19 +72,15 @@ export default function Scan() {
                 {camera && (
                     <CodeScanner
                         cameraId={camera.id}
-                        config={{
-                            fps: 10,
-                            aspectRatio: containerAspectRatio,
-                            qrbox: { width: 100, height: 100 },
-                        }}
-                        qrCodeSuccessCallback={(decodedText: string, result: Html5QrcodeResult) => {
-                            console.log(decodedText, result);
-                        }}
-                        qrCodeErrorCallback={(errorMessage: string, error: Html5QrcodeError) => {
-                            console.log(errorMessage, error);
-                        }}
-                        onStartError={() => {
-                            setStartError(true);
+                        aspectRatio={containerAspectRatio}
+                        // config={{
+                        //     fps: 10,
+                        //     aspectRatio: containerAspectRatio,
+                        //     qrbox: { width: 100, height: 100 },
+                        // }}
+                        showFilter={true}
+                        onQRCodeScan={function (result: Html5QrcodeResult): void {
+                            console.log(result);
                         }}
                     />
                 )}

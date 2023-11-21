@@ -46,7 +46,7 @@ export function useGlobalPeer(handleData?: DataHandler, verbose = false) {
         return () => {
             newPeer.disconnect();
         };
-    }, [appSettings.thisDevice.id, handleData, setConnections, setSelfPeer, verbose]);
+    }, [appSettings.thisDevice.id, setConnections, setSelfPeer, verbose]);
 
     // Function to send a message
     const sendMessage = (data: unknown, chunked?: boolean) => {
