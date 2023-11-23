@@ -1,4 +1,4 @@
-import { LinkedDevice } from "@type/device";
+import { LinkedDevice } from "@shared/type/device";
 import { twMerge } from "tailwind-merge";
 
 interface DeviceCardProps

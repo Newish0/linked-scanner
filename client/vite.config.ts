@@ -8,6 +8,8 @@ const GH_PAGE_BASE = "https://newish0.github.io/linked-scanner/client";
 export default defineConfig(({ command, mode }) => {
     console.log(command, mode);
 
+    console.log(path.resolve(__dirname, "../shared"))
+
     return {
         plugins: [react()],
         resolve: {
@@ -20,6 +22,7 @@ export default defineConfig(({ command, mode }) => {
                 { find: "@components", replacement: path.resolve(__dirname, "src/components") },
                 { find: "@routes", replacement: path.resolve(__dirname, "src/routes") },
                 { find: "@atoms", replacement: path.resolve(__dirname, "src/atoms") },
+                { find: "@shared", replacement: path.resolve(__dirname, "../shared") },
                 {
                     find: "tailwind-config",
                     replacement: path.resolve(__dirname, "./tailwind.config.js"),

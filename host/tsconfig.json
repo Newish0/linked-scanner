@@ -47,6 +47,9 @@
       "@atoms/*": [
         "atoms/*"
       ],
+      "@shared/*": [
+        "../../shared/*"
+      ],
     }
   },
   "include": [

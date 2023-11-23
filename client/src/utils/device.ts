@@ -1,4 +1,4 @@
-import { DeviceId, DeviceParts } from "@type/device";
+import { DeviceId, DeviceParts } from "@shared/type/device";
 
 export function randomDeviceId(): DeviceId {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

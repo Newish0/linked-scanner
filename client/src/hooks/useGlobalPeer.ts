@@ -1,18 +1,25 @@
 import { useAppSettings } from "@atoms/appsettings";
 import { connectionsAtom, selfPeerAtom } from "@atoms/peer";
+import { PeerId } from "@shared/type/general";
+import { deviceIdToPeerId } from "@utils/convert";
 import { useAtom } from "jotai";
 import { DataConnection, Peer } from "peerjs";
 import { useEffect } from "react";
 
 type DataHandler = (data: unknown, connection: DataConnection) => void;
 
-export function useGlobalPeer(handleData?: DataHandler, verbose = false) {
+type GlobalPeerOptions = {
+    handleData?: DataHandler;
+    verbose?: boolean;
+};
+
+export function useGlobalPeer({ handleData = undefined, verbose = false }: GlobalPeerOptions = {}) {
     const [selfPeer, setSelfPeer] = useAtom(selfPeerAtom);
     const [connections, setConnections] = useAtom(connectionsAtom);
     const [appSettings] = useAppSettings();
 
     useEffect(() => {
-        const newPeer = new Peer(appSettings.thisDevice.id);
+        const newPeer = new Peer(deviceIdToPeerId(appSettings.thisDevice.id));
 
         // Event handler for when a connection is established
         newPeer.once("open", (id) => {
@@ -58,7 +65,7 @@ export function useGlobalPeer(handleData?: DataHandler, verbose = false) {
     };
 
     // Function to establish new connection
-    const connect = (peerId: string) => {
+    const connect = (peerId: PeerId) => {
         if (verbose) console.log(`Attempting to connect to ${peerId}`);
 
         if (!selfPeer)

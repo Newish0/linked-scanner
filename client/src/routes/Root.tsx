@@ -1,10 +1,11 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 import BottomNav from "@components/BottomNav";
-import { useGlobalPeer } from "@hooks/peer";
+import { useGlobalPeer } from "@hooks/useGlobalPeer";
 
 export default function Root() {
-    // const { connect } = useGlobalPeer(() => {}, true);
+    // Init
+    useGlobalPeer({ verbose: true });
 
     return (
         <>

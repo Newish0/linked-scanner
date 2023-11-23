@@ -6,16 +6,12 @@ import { twMerge } from "tailwind-merge";
 
 interface CodeScannerProps {
     cameraId: string;
-    aspectRatio?: number;
     onQRCodeScan: (result: Html5QrcodeResult) => void;
     showFilter: boolean;
+    fps: number;
 }
 
-export default function CodeScanner({
-    cameraId,
-    onQRCodeScan,
-    showFilter,
-}: CodeScannerProps) {
+export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }: CodeScannerProps) {
     const [containerId] = useState(crypto.randomUUID());
 
     const { videoRef, canvasRef } = useCamera({
@@ -46,7 +42,7 @@ export default function CodeScanner({
                 });
             };
 
-            scanInterval = setInterval(scanForQR, 100);
+            scanInterval = setInterval(scanForQR, (1 / fps) * 1000);
         };
 
         init();
@@ -54,7 +50,7 @@ export default function CodeScanner({
         return () => {
             clearInterval(scanInterval);
         };
-    }, [canvasRef, containerId, onQRCodeScan]);
+    }, [canvasRef, containerId, fps, onQRCodeScan]);
 
     return (
         <div className="h-full">
@@ -86,4 +82,5 @@ export default function CodeScanner({
 
 CodeScanner.defaultProps = {
     showFilter: false,
+    fps: 10,
 };

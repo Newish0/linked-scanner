@@ -1,13 +1,12 @@
 import { Device, LinkedDevice } from "@shared/type/device";
-import { randomDeviceId } from "@utils/device";
-import { generateAdjNounPair } from "@utils/wordGenerator";
+import { randomDeviceId } from "../../../client/src/utils/device";
+import { generateAdjNounPair } from "../../../client/src/utils/wordGenerator";
 import { atom, useAtom } from "jotai";
 
 type AppSettings = {
     thisDevice: Device;
     linkedDevices: LinkedDevice[];
     theme: string;
-    lastUsedCameraId: string | null;
 };
 
 const getInitialAppSettings = () => {
@@ -22,7 +21,6 @@ const getInitialAppSettings = () => {
         },
         linkedDevices: [],
         theme: "night",
-        lastUsedCameraId: null,
     };
 
     const settings: AppSettings = settingsJSON ? JSON.parse(settingsJSON) : defaultSettings;

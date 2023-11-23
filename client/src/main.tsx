@@ -8,6 +8,7 @@ import ErrorPage from "@routes/ErrorPage";
 import Settings from "@routes/Settings";
 import Home from "@routes/Home";
 import Scan from "@routes/Scan";
+import Connect from "@routes/Connect";
 
 const router = createHashRouter([
     {
@@ -26,6 +27,10 @@ const router = createHashRouter([
             {
                 path: "settings/",
                 element: <Settings />,
+            },
+            {
+                path: "connect/:deviceId",
+                element: <Connect />,
             },
         ],
     },

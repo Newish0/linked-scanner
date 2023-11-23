@@ -1,49 +1,34 @@
 import { useAppSettings } from "@atoms/appsettings";
-import { selfPeerAtom } from "@atoms/peer";
+
 import CodeScanner from "@components/CodeScanner";
 import PageSection from "@components/Page/Section";
-import ResponsiveModal from "@components/ResponsiveModal";
+import ResponsiveModal from "@components/modals/ResponsiveModal";
 import { useCameraList } from "@hooks/html5qrcode";
-import { IconAlertCircle } from "@tabler/icons-react";
-import { ScanMode } from "@type/scan";
-import { CameraDevice, Html5QrcodeResult } from "html5-qrcode";
-import { Html5QrcodeError } from "html5-qrcode/esm/core";
+import { useGlobalPeer } from "@hooks/useGlobalPeer";
 
-import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { IconAlertCircle } from "@tabler/icons-react";
+
+import { ScanMode } from "@type/scan";
+import { parseURLScheme } from "@utils/convert";
+import { isDeviceId } from "@utils/device";
+import { CameraDevice, Html5QrcodeResult } from "html5-qrcode";
+
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Scan() {
     const [appSettings, setAppSettings] = useAppSettings();
     const { state } = useLocation();
-    const containerRef = useRef<HTMLDivElement | null>(null);
     const { cameras, hasError: hasCamPermissionError } = useCameraList();
     const [camera, setCamera] = useState<CameraDevice>();
-    const [hasStartError, setStartError] = useState(false);
-    const [containerAspectRatio, setContainerAspectRatio] = useState<number>();
+    const navigate = useNavigate();
+    const { sendMessage } = useGlobalPeer({ verbose: true });
 
     // Set last used camera if saved
     useEffect(() => {
         const lastUsedCamera = cameras?.find((cam) => cam.id === appSettings.lastUsedCameraId);
         setCamera(lastUsedCamera);
     }, [appSettings.lastUsedCameraId, cameras]);
-
-    useEffect(() => {
-        const container = containerRef.current;
-        const updateContainerAspectRatio = () => {
-            const rect = container?.getBoundingClientRect();
-            if (rect) setContainerAspectRatio(rect.width / rect.height);
-        };
-
-        // Set initial container aspect ratio
-        updateContainerAspectRatio();
-
-        // Sync container aspect ratio
-        container?.addEventListener("resize", updateContainerAspectRatio);
-
-        return () => {
-            container?.removeEventListener("resize", updateContainerAspectRatio);
-        };
-    }, []);
 
     const handleCameraChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
         const id = evt.target.value;
@@ -52,9 +37,28 @@ export default function Scan() {
         setAppSettings({ ...appSettings, lastUsedCameraId: selectedCam?.id ?? null });
     };
 
+    const handleQRCodeScan = (result: Html5QrcodeResult) => {
+        console.log("SCANNED", result);
+        const parsedUrlScheme = parseURLScheme(result.decodedText);
+
+        if (parsedUrlScheme) {
+            if (parsedUrlScheme.path === "/link") {
+                if (parsedUrlScheme.id && isDeviceId(parsedUrlScheme.id)) {
+                    console.log(parsedUrlScheme);
+                    navigate(`/connect/${parsedUrlScheme.id}`);
+                } else console.error(parsedUrlScheme.id, "is not a valid device id.");
+            }
+        } else {
+            sendMessage({
+                auth: null, // TODO
+                payload: result.decodedText,
+            });
+        }
+    };
+
     return (
         <>
-            <div className="h-full relative" ref={containerRef}>
+            <div className="h-full relative">
                 <div className="absolute z-10 w-full">
                     <select
                         className="select w-full select-ghost rounded-none outline-none border-none bg-transparent"
@@ -72,20 +76,12 @@ export default function Scan() {
                 {camera && (
                     <CodeScanner
                         cameraId={camera.id}
-                        aspectRatio={containerAspectRatio}
-                        // config={{
-                        //     fps: 10,
-                        //     aspectRatio: containerAspectRatio,
-                        //     qrbox: { width: 100, height: 100 },
-                        // }}
                         showFilter={true}
-                        onQRCodeScan={function (result: Html5QrcodeResult): void {
-                            console.log(result);
-                        }}
+                        onQRCodeScan={handleQRCodeScan}
                     />
                 )}
 
-                {hasStartError || (hasCamPermissionError && <CamErrorSection />)}
+                {hasCamPermissionError && <CamErrorSection />}
             </div>
 
             {state?.mode === ScanMode.NewDevice && (

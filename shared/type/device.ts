@@ -6,7 +6,7 @@ export type DeviceId = `${string}-${string}-${string}-${string}`;
 export type DeviceParts = [string, string, string, string];
 
 export type Device = {
-    id: `${P2PIdPrefix}-${DeviceId}`;
+    id: DeviceId;
     name: string;
     createdAt: Date;
 };

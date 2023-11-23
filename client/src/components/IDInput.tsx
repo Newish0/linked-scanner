@@ -1,4 +1,4 @@
-import { DeviceId, DeviceParts } from "@type/device";
+import { DeviceId, DeviceParts } from "@shared/type/device";
 import { toDeviceIdParts } from "@utils/device";
 import { useRef, useState } from "react";
 
