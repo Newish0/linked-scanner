@@ -1,6 +1,6 @@
 // import { useAppSettings } from "@atoms/appsettings";
 import { connectionsAtom, selfPeerAtom } from "@atoms/peer";
-import { PeerId } from "../../../client/src/type/general";
+import { PeerId } from "@shared/type/general";
 import { useAtom } from "jotai";
 import { DataConnection, Peer } from "peerjs";
 import { useEffect } from "react";
@@ -19,7 +19,7 @@ export function useGlobalPeer({ handleData = undefined, verbose = false }: Globa
 
     useEffect(() => {
         // const newPeer = new Peer(appSettings.thisDevice.id);
-        const newPeer = new Peer("7OgY-5MWb-XnYX-osv7");
+        const newPeer = new Peer("LINKED-SCANNER-7OgY-5MWb-XnYX-osv7");
 
         // Event handler for when a connection is established
         newPeer.once("open", (id) => {
@@ -29,18 +29,18 @@ export function useGlobalPeer({ handleData = undefined, verbose = false }: Globa
 
         // Event handler for incoming connections
         newPeer.on("connection", (connection) => {
-            if (verbose) console.log(`New connection to ${connection.connectionId}`);
+            if (verbose) console.log(`New connection to ${connection.peer}`);
 
             setConnections((prevConnections) => [...prevConnections, connection]);
 
             // Event handler for when data is received
             connection.on("data", (data) => {
-                if (verbose) console.log(`Received: ${data} from ${connection.connectionId}`);
+                if (verbose) console.log(`Received: ${data} from ${connection.peer}`);
                 if (handleData) handleData(data, connection);
             });
 
             connection.on("close", () => {
-                if (verbose) console.log(`Connection ${connection.connectionId} closed.`);
+                if (verbose) console.log(`Connection ${connection.peer} closed.`);
 
                 // Remove the closed connection from the list
                 setConnections((prevConnections) =>

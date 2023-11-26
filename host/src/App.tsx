@@ -1,4 +1,5 @@
 import { useGlobalPeer } from "@hooks/useGlobalPeer";
+import { PeerId } from "@shared/type/general";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useState } from "react";
 
@@ -23,13 +24,13 @@ function App() {
         <>
             <div className="text-2xl italic">Hello world</div>
 
-            <input type="text" value={id} onChange={(evt) => setId(evt.target.value)} />
+            <input className="w-full" type="text" value={id} onChange={(evt) => setId(evt.target.value)} />
 
             <button
                 onClick={() => {
-                    connect(id);
+                    connect(id as PeerId);
                 }}
-            ></button>
+            >CONNECT </button>
 
             {msgs.map(({ payload }, i) => (
                 <p key={i}>{payload}</p>

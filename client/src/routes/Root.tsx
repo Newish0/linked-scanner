@@ -2,10 +2,20 @@ import { Navigate, Outlet } from "react-router-dom";
 
 import BottomNav from "@components/BottomNav";
 import { useGlobalPeer } from "@hooks/useGlobalPeer";
+import PageContainer from "@components/Page/Container";
+import PrepConnectionLoader from "@components/loaders/PrepConnection";
 
 export default function Root() {
     // Init
-    useGlobalPeer({ verbose: true });
+    const { selfPeer } = useGlobalPeer({ verbose: true });
+
+    if (!selfPeer) {
+        return (
+            <div className="h-screen flex items-center">
+                <PrepConnectionLoader />
+            </div>
+        );
+    }
 
     return (
         <>

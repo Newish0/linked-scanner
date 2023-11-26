@@ -1,14 +1,15 @@
 import { DeviceId, DeviceParts } from "@shared/type/device";
 
+const VALID_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
 export function randomDeviceId(): DeviceId {
-    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     const sections: string[] = [];
 
     for (let i = 0; i < 4; i++) {
         let section = "";
         for (let j = 0; j < 4; j++) {
-            const randomIndex = Math.floor(Math.random() * chars.length);
-            section += chars[randomIndex];
+            const randomIndex = Math.floor(Math.random() * VALID_CHARS.length);
+            section += VALID_CHARS[randomIndex];
         }
         sections.push(section);
     }
@@ -22,7 +23,10 @@ export function isDeviceId(idStr: string) {
 
     if (parts.length !== 4) return false;
 
-    for (const part of parts) if (part.length !== 4) return false;
+    for (const part of parts) {
+        if (part.length !== 4) return false;
+        for (const char of part) if (!VALID_CHARS.includes(char)) return false;
+    }
 
     return true;
 }

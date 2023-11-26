@@ -1,12 +1,11 @@
 import { useAppSettings } from "@atoms/appsettings";
+import Alert from "@components/Alert";
 
 import CodeScanner from "@components/CodeScanner";
 import PageSection from "@components/Page/Section";
 import ResponsiveModal from "@components/modals/ResponsiveModal";
 import { useCameraList } from "@hooks/html5qrcode";
 import { useGlobalPeer } from "@hooks/useGlobalPeer";
-
-import { IconAlertCircle } from "@tabler/icons-react";
 
 import { ScanMode } from "@type/scan";
 import { parseURLScheme } from "@utils/convert";
@@ -100,16 +99,9 @@ function CamErrorSection() {
     };
     return (
         <PageSection>
-            <div role="alert" className="alert alert-error">
-                <IconAlertCircle />
-                <span>Failed to start camera. Please check camera permissions.</span>
-
-                <div>
-                    <button className="btn btn-sm btn-neutral" onClick={reloadPage}>
-                        Try Again
-                    </button>
-                </div>
-            </div>
+            <Alert btnText="Try again" onBtnClick={reloadPage} type="error">
+                Failed to start camera. Please check camera permissions.
+            </Alert>
         </PageSection>
     );
 }
