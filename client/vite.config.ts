@@ -8,7 +8,7 @@ const GH_PAGE_BASE = "https://newish0.github.io/linked-scanner/client";
 export default defineConfig(({ command, mode }) => {
     console.log(command, mode);
 
-    console.log(path.resolve(__dirname, "../shared"))
+    // console.log(path.resolve(__dirname, "../shared"))
 
     return {
         plugins: [react()],
@@ -16,7 +16,6 @@ export default defineConfig(({ command, mode }) => {
             alias: [
                 { find: "@", replacement: path.resolve(__dirname, "src") },
                 { find: "@assets", replacement: path.resolve(__dirname, "src/assets") },
-                { find: "@utils", replacement: path.resolve(__dirname, "src/utils") },
                 { find: "@type", replacement: path.resolve(__dirname, "src/type") },
                 { find: "@hooks", replacement: path.resolve(__dirname, "src/hooks") },
                 { find: "@components", replacement: path.resolve(__dirname, "src/components") },

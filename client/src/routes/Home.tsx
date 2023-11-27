@@ -1,12 +1,11 @@
 import { useAppSettings } from "@atoms/appsettings";
 
 import DeviceCard from "@components/DeviceCard";
-import IDInput from "@components/IDInput";
 import PageContainer from "@components/Page/Container";
 // import PageHeader from "@components/Page/Header";
 import PageSection from "@components/Page/Section";
 import { ScanMode } from "@type/scan";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Home() {
     const [appSettings] = useAppSettings();

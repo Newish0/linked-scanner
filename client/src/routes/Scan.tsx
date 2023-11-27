@@ -8,8 +8,8 @@ import { useCameraList } from "@hooks/html5qrcode";
 import { useGlobalPeer } from "@hooks/useGlobalPeer";
 
 import { ScanMode } from "@type/scan";
-import { parseURLScheme } from "@utils/convert";
-import { isDeviceId } from "@utils/device";
+import { parseURLScheme } from "@shared/utils/convert";
+import { isDeviceId } from "@shared/utils/device";
 import { CameraDevice, Html5QrcodeResult } from "html5-qrcode";
 
 import { useEffect, useState } from "react";

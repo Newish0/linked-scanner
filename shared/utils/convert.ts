@@ -1,6 +1,7 @@
 import { URL_SCHEME_PROTOCOL } from "@shared/type/const";
 import { DeviceId, P2P_ID_PREFIX } from "@shared/type/device";
 import { PeerId } from "@shared/type/general";
+import { isDeviceId } from "./device";
 
 /**
  *
@@ -30,4 +31,14 @@ export function parseURLScheme(url: string) {
 
 export function deviceIdToPeerId(deviceId: DeviceId): PeerId {
     return `${P2P_ID_PREFIX}-${deviceId}`;
+}
+
+export function peerIdToDeviceId(peerId: PeerId): DeviceId | null {
+    if (peerId.indexOf(P2P_ID_PREFIX) !== 0) return null;
+
+    const maybeDeviceId = peerId.slice(P2P_ID_PREFIX.length);
+
+    if (!isDeviceId(maybeDeviceId)) return null;
+
+    return maybeDeviceId as DeviceId;
 }

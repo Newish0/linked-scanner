@@ -1,5 +1,5 @@
 // useCamera.ts
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 type UseCameraProps = {
     cameraId?: string;

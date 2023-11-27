@@ -53,7 +53,7 @@
     }
   },
   "include": [
-    "src"
+    "src",
   ],
   "references": [
     {

@@ -1,5 +1,5 @@
 import { DeviceId, DeviceParts } from "@shared/type/device";
-import { toDeviceIdParts } from "@utils/device";
+import { toDeviceIdParts } from "@shared/utils/device";
 import { useRef, useState } from "react";
 
 export default function IDInput({
