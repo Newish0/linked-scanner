@@ -1,6 +1,7 @@
-// import { useAppSettings } from "@atoms/appsettings";
-import { connectionsAtom, selfPeerAtom } from "@atoms/peer";
+import { useAppSettings } from "@atoms/appsettings";
+import { connectionsAtom, localPeerAtom } from "@atoms/peer";
 import { PeerId } from "@shared/type/general";
+import { deviceIdToPeerId } from "@shared/utils/convert";
 import { useAtom } from "jotai";
 import { DataConnection, Peer } from "peerjs";
 import { useEffect } from "react";
@@ -10,37 +11,47 @@ type DataHandler = (data: unknown, connection: DataConnection) => void;
 type GlobalPeerOptions = {
     handleData?: DataHandler;
     verbose?: boolean;
+    timeout?: number;
 };
 
-export function useGlobalPeer({ handleData = undefined, verbose = false }: GlobalPeerOptions = {}) {
-    const [selfPeer, setSelfPeer] = useAtom(selfPeerAtom);
+export function useGlobalPeer({
+    handleData = undefined,
+    verbose = false,
+    timeout: timeoutDuration = 10000,
+}: GlobalPeerOptions = {}) {
+    const [localPeer, setLocalPeer] = useAtom(localPeerAtom);
     const [connections, setConnections] = useAtom(connectionsAtom);
-    // const [appSettings] = useAppSettings();
+    const [appSettings] = useAppSettings();
+
+    if (verbose) {
+        console.log(` Active connections`, connections.map((c) => c.peer).join("\n - "));
+    }
 
     useEffect(() => {
-        // const newPeer = new Peer(appSettings.thisDevice.id);
-        const newPeer = new Peer("LINKED-SCANNER-7OgY-5MWb-XnYX-osv7");
+        if (verbose) console.log(`[GlobalPeer] Refresh connection.`);
+
+        const newPeer = new Peer(deviceIdToPeerId(appSettings.thisDevice.id));
 
         // Event handler for when a connection is established
         newPeer.once("open", (id) => {
-            if (verbose) console.log(`Your connection opened as ${id}`);
-            setSelfPeer(newPeer);
+            if (verbose) console.log(`[GlobalPeer] Your connection opened as ${id}`);
+            setLocalPeer(newPeer);
         });
 
         // Event handler for incoming connections
         newPeer.on("connection", (connection) => {
-            if (verbose) console.log(`New connection to ${connection.peer}`);
+            if (verbose) console.log(`[GlobalPeer] New connection to ${connection.peer}`);
 
             setConnections((prevConnections) => [...prevConnections, connection]);
 
             // Event handler for when data is received
             connection.on("data", (data) => {
-                if (verbose) console.log(`Received: ${data} from ${connection.peer}`);
+                if (verbose) console.log(`[GlobalPeer] Received: ${data} from ${connection.peer}`);
                 if (handleData) handleData(data, connection);
             });
 
             connection.on("close", () => {
-                if (verbose) console.log(`Connection ${connection.peer} closed.`);
+                if (verbose) console.log(`[GlobalPeer] Connection ${connection.peer} closed.`);
 
                 // Remove the closed connection from the list
                 setConnections((prevConnections) =>
@@ -53,12 +64,12 @@ export function useGlobalPeer({ handleData = undefined, verbose = false }: Globa
         return () => {
             newPeer.disconnect();
         };
-    }, [setConnections, setSelfPeer, verbose]);
-    // }, [appSettings.thisDevice.id, setConnections, setSelfPeer, verbose]);
+    }, [appSettings.thisDevice.id, handleData, setConnections, setLocalPeer, verbose]);
 
     // Function to send a message
     const sendMessage = (data: unknown, chunked?: boolean) => {
-        if (verbose) console.log(`Sending message (chunked: ${chunked || false}) ${data}`);
+        if (verbose)
+            console.log(`[GlobalPeer] Sending message (chunked: ${chunked || false}) ${data}`);
 
         connections.forEach((connection) => {
             connection.send(data, chunked);
@@ -66,16 +77,51 @@ export function useGlobalPeer({ handleData = undefined, verbose = false }: Globa
     };
 
     // Function to establish new connection
-    const connect = (peerId: PeerId) => {
-        if (verbose) console.log(`Attempting to connect to ${peerId}`);
+    // TODO: move to using full device obj as param scanned from QR code
+    const connect = async (peerId: PeerId) => {
+        if (verbose) console.log(`[GlobalPeer] Attempting to connect to ${peerId}`);
 
-        if (!selfPeer)
+        if (!localPeer)
             throw new Error(
-                "Your connection is not yet open. Please wait until `selfPeer` us defined."
+                "Your connection is not yet open. Please wait until `localPeer` is defined."
             );
 
-        selfPeer.connect(peerId);
+        // Ensure connection has not already been established
+        const existingConn = connections.find(({ peer }) => peer === peerId);
+        if (existingConn) {
+            if (verbose) console.warn(`Connection ${peerId} already exist!`);
+            return existingConn;
+        }
+
+        return new Promise<DataConnection>((resolve, reject) => {
+            const newConnection = localPeer.connect(peerId, { metadata: undefined }); // TODO: add device info as metadata
+
+            const connectionTimeout = setTimeout(() => {
+                if (verbose)
+                    console.error(
+                        "[GlobalPeer] Connection timeout - unable to establish connection within the specified time."
+                    );
+
+                reject(
+                    "Connection timeout - unable to establish connection within the specified time."
+                );
+            }, timeoutDuration);
+
+            newConnection.once("open", () => {
+                if (verbose)
+                    console.log(
+                        `[GlobalPeer] Connection to ${peerId} has successfully been established.`
+                    );
+                clearTimeout(connectionTimeout);
+                setConnections((prevConnections) => [...prevConnections, newConnection]);
+                resolve(newConnection);
+            });
+
+            newConnection.once("error", (err) => {
+                reject(err);
+            });
+        });
     };
 
-    return { selfPeer, connections, sendMessage, connect } as const;
+    return { localPeer, connections, sendMessage, connect } as const;
 }

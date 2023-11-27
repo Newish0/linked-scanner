@@ -1,6 +1,6 @@
 import { Device, LinkedDevice } from "@shared/type/device";
-import { randomDeviceId } from "../../../client/src/utils/device";
-import { generateAdjNounPair } from "../../../client/src/utils/wordGenerator";
+import { randomDeviceId } from "@shared/utils/device";
+import { generateAdjNounPair } from "@shared/utils/wordGenerator";
 import { atom, useAtom } from "jotai";
 
 type AppSettings = {
