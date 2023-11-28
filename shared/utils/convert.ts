@@ -21,9 +21,10 @@ export function parseURLScheme(url: string) {
 
         // Access the values using the get method
         const id = params.get("id");
+        const name = params.get("name");
         const token = params.get("token");
 
-        return { path, id, token };
+        return { path, id, name, token };
     } catch (error) {
         return null;
     }

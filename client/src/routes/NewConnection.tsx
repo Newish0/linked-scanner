@@ -1,33 +1,52 @@
+import { useAppSettings } from "@atoms/appsettings";
 import Alert from "@components/Alert";
 import PageContainer from "@components/Page/Container";
 import PageSection from "@components/Page/Section";
 import { useGlobalPeer } from "@hooks/useGlobalPeer";
 import { DeviceId } from "@shared/type/device";
+import { ConnectionMetadata } from "@shared/type/peer";
 import { deviceIdToPeerId } from "@shared/utils/convert";
 import { isDeviceId } from "@shared/utils/device";
 import { DataConnection } from "peerjs";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useSearchParams } from "react-router-dom";
 
-export default function Connect() {
-    const { deviceId } = useParams();
+export default function NewConnection() {
+    const [appSettings] = useAppSettings();
+    const [searchParams] = useSearchParams();
     const { connect, localPeer } = useGlobalPeer({ verbose: true });
 
     const [hasDeviceIdErr, setHasDeviceIdErr] = useState(false);
     const [connErr, setConnErr] = useState<string>();
     const [newConnection, setNewConnection] = useState<DataConnection>();
 
+    const deviceId = searchParams.get("deviceId");
+    const name = searchParams.get("name");
+    // const token = searchParams.get("token");
+
     useEffect(() => {
         if (!localPeer) return;
 
         if (deviceId && isDeviceId(deviceId)) {
-            connect(deviceIdToPeerId(deviceId as DeviceId))
+            const metadata: ConnectionMetadata = {
+                host: {
+                    id: deviceId as DeviceId,
+                    name: name ?? "n/a",
+                    createdAt: new Date(),
+                },
+                client: appSettings.thisDevice,
+                openedAt: new Date(),
+            };
+
+            connect(deviceIdToPeerId(deviceId as DeviceId), {
+                metadata,
+            })
                 .then((newConnection) => newConnection && setNewConnection(newConnection))
                 .catch(() => setConnErr(`Failed to connection to host.`));
         } else {
             setHasDeviceIdErr(true);
         }
-    }, [connect, deviceId, localPeer]);
+    }, [appSettings.thisDevice, connect, deviceId, localPeer, name]);
 
     if (hasDeviceIdErr) {
         return (
@@ -68,12 +87,14 @@ export default function Connect() {
         );
     }
 
+    const metadata = newConnection.metadata as ConnectionMetadata;
+
     return (
         <PageContainer>
             <PageSection>
-                <div>Connected to {newConnection.metadata.name}</div>
+                <div>Connected to {metadata.host.name}</div>
                 <div>
-                    DeviceID: <code>{newConnection.metadata.id}</code>
+                    DeviceID: <code>{metadata.host.id}</code>
                 </div>
             </PageSection>
         </PageContainer>

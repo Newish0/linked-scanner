@@ -13,7 +13,7 @@ import { isDeviceId } from "@shared/utils/device";
 import { CameraDevice, Html5QrcodeResult } from "html5-qrcode";
 
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { createSearchParams, useLocation, useNavigate } from "react-router-dom";
 
 export default function Scan() {
     const [appSettings, setAppSettings] = useAppSettings();
@@ -44,7 +44,14 @@ export default function Scan() {
             if (parsedUrlScheme.path === "/link") {
                 if (parsedUrlScheme.id && isDeviceId(parsedUrlScheme.id)) {
                     console.log(parsedUrlScheme);
-                    navigate(`/connect/${parsedUrlScheme.id}`);
+                    navigate({
+                        pathname: `/connection/new`,
+                        search: createSearchParams({
+                            deviceId: parsedUrlScheme.id ?? "",
+                            name: parsedUrlScheme.name ?? "",
+                            token: parsedUrlScheme.token ?? "",
+                        }).toString(),
+                    });
                 } else console.error(parsedUrlScheme.id, "is not a valid device id.");
             }
         } else {

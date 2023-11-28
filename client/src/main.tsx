@@ -8,7 +8,7 @@ import ErrorPage from "@routes/ErrorPage";
 import Settings from "@routes/Settings";
 import Home from "@routes/Home";
 import Scan from "@routes/Scan";
-import Connect from "@routes/Connect";
+import NewConnection from "@routes/NewConnection";
 
 const router = createHashRouter([
     {
@@ -29,13 +29,12 @@ const router = createHashRouter([
                 element: <Settings />,
             },
             {
-                path: "connect/:deviceId",
-                element: <Connect />,
+                path: "connection/new",
+                element: <NewConnection />,
             },
         ],
     },
 ]);
-
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>

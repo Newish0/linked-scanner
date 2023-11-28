@@ -1,21 +1,33 @@
 import { useAppSettings } from "@atoms/appsettings";
 import { connectionsAtom, localPeerAtom } from "@atoms/peer";
 import { PeerId } from "@shared/type/general";
+import { ConnectionMetadata } from "@shared/type/peer";
 import { deviceIdToPeerId } from "@shared/utils/convert";
 import { useAtom } from "jotai";
-import { DataConnection, Peer } from "peerjs";
+import { DataConnection, Peer, PeerConnectOption } from "peerjs";
 import { useEffect } from "react";
 
 type DataHandler = (data: unknown, connection: DataConnection) => void;
+type ConnectionHandler = (connection: DataConnection) => void;
 
 type GlobalPeerOptions = {
     handleData?: DataHandler;
+    handleConnection?: ConnectionHandler;
     verbose?: boolean;
     timeout?: number;
 };
 
+type ConnectionOptions = PeerConnectOption & {
+    metadata?: ConnectionMetadata;
+};
+
+const connPromiseMap = new Map<string, Promise<DataConnection>>();
+
+const dataHandlers: DataHandler[] = [];
+
 export function useGlobalPeer({
     handleData = undefined,
+    handleConnection = undefined,
     verbose = false,
     timeout: timeoutDuration = 10000,
 }: GlobalPeerOptions = {}) {
@@ -24,8 +36,27 @@ export function useGlobalPeer({
     const [appSettings] = useAppSettings();
 
     if (verbose) {
-        console.log(` Active connections`, connections.map((c) => c.peer).join("\n - "));
+        console.log(
+            ` Active connections\n -`,
+            connections.map((c) => c.peer).join("\n - "),
+            connections
+        );
     }
+
+    useEffect(() => {
+        const copiedHandler = handleData;
+
+        if (copiedHandler) dataHandlers.push(copiedHandler);
+
+        return () => {
+            if (copiedHandler) {
+                dataHandlers.splice(
+                    dataHandlers.findIndex((handler) => handler === copiedHandler),
+                    1
+                );
+            }
+        };
+    }, [handleData]);
 
     useEffect(() => {
         if (verbose) console.log(`[GlobalPeer] Refresh connection.`);
@@ -40,14 +71,23 @@ export function useGlobalPeer({
 
         // Event handler for incoming connections
         newPeer.on("connection", (connection) => {
-            if (verbose) console.log(`[GlobalPeer] New connection to ${connection.peer}`);
+            if (verbose)
+                console.log(`[GlobalPeer] New connection to ${connection.peer}`, connection);
 
             setConnections((prevConnections) => [...prevConnections, connection]);
 
+            if (handleConnection) handleConnection(connection);
+
             // Event handler for when data is received
             connection.on("data", (data) => {
-                if (verbose) console.log(`[GlobalPeer] Received: ${data} from ${connection.peer}`);
-                if (handleData) handleData(data, connection);
+                if (verbose)
+                    console.log(
+                        `[GlobalPeer] Received: \`\n${
+                            typeof data === "object" ? JSON.stringify(data, null, 2) : data
+                        }\`\nfrom ${connection.peer}`
+                    );
+
+                for (const dataHandler of dataHandlers) dataHandler(data, connection);
             });
 
             connection.on("close", () => {
@@ -64,7 +104,7 @@ export function useGlobalPeer({
         return () => {
             newPeer.disconnect();
         };
-    }, [appSettings.thisDevice.id, handleData, setConnections, setLocalPeer, verbose]);
+    }, [appSettings.thisDevice.id, handleConnection, setConnections, setLocalPeer, verbose]);
 
     // Function to send a message
     const sendMessage = (data: unknown, chunked?: boolean) => {
@@ -78,7 +118,7 @@ export function useGlobalPeer({
 
     // Function to establish new connection
     // TODO: move to using full device obj as param scanned from QR code
-    const connect = async (peerId: PeerId) => {
+    const connect = async (peerId: PeerId, options?: ConnectionOptions) => {
         if (verbose) console.log(`[GlobalPeer] Attempting to connect to ${peerId}`);
 
         if (!localPeer)
@@ -93,8 +133,10 @@ export function useGlobalPeer({
             return existingConn;
         }
 
-        return new Promise<DataConnection>((resolve, reject) => {
-            const newConnection = localPeer.connect(peerId, { metadata: undefined }); // TODO: add device info as metadata
+        if (connPromiseMap.get(peerId)) return connPromiseMap.get(peerId);
+
+        const connPromise = new Promise<DataConnection>((resolve, reject) => {
+            const newConnection = localPeer.connect(peerId, options);
 
             const connectionTimeout = setTimeout(() => {
                 if (verbose)
@@ -115,12 +157,18 @@ export function useGlobalPeer({
                 clearTimeout(connectionTimeout);
                 setConnections((prevConnections) => [...prevConnections, newConnection]);
                 resolve(newConnection);
+                connPromiseMap.delete(peerId);
             });
 
             newConnection.once("error", (err) => {
                 reject(err);
+                connPromiseMap.delete(peerId);
             });
         });
+
+        connPromiseMap.set(peerId, connPromise);
+
+        return connPromise;
     };
 
     return { localPeer, connections, sendMessage, connect } as const;

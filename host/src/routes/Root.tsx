@@ -7,11 +7,19 @@ import { useEffect } from "react";
 import { IconHistory, IconHome, IconSettings } from "@tabler/icons-react";
 import { twMerge } from "tailwind-merge";
 
+import { invoke } from "@tauri-apps/api/tauri";
+
 export default function Root() {
     const navigate = useNavigate();
 
     // Init connection
-    const { localPeer } = useGlobalPeer({ verbose: true });
+    const { localPeer } = useGlobalPeer({
+        verbose: true,
+        handleData(data: unknown) {
+            console.log("DATA HANDLED", data);
+            invoke("fire_key_sequence", { keySequence: (data as { payload?: string })?.payload });
+        },
+    });
 
     useEffect(() => {
         if (localPeer) navigate("/home");
@@ -30,7 +38,7 @@ export default function Root() {
             <div className="w-screen h-screen fixed flex flex-row">
                 <SideNav />
 
-                <main className="overflow-auto h-full">
+                <main className="overflow-auto w-full h-full">
                     <Outlet />
                 </main>
             </div>
@@ -40,7 +48,7 @@ export default function Root() {
 
 function SideNav() {
     return (
-        <ul className="menu bg-base-200 w-min sm:w-40 rounded-e-box h-full">
+        <ul className="menu bg-base-200 w-min sm:w-64 rounded-e-box h-full">
             <li className="my-2 text-center sm:text-lg font-medium">Linked Scanner</li>
 
             <li>
