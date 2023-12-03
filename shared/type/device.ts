@@ -13,6 +13,7 @@ export type Device = {
 
 export type LinkedDevice = Device & {
     lastConnected: Date;
+    connected?: boolean;
 
     /** Number of times the connection to device was established  */
     numConnected: number;

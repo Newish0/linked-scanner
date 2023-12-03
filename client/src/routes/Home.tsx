@@ -2,6 +2,7 @@ import { useAppSettings } from "@atoms/appsettings";
 
 import DeviceCard from "@components/DeviceCard";
 import PageContainer from "@components/Page/Container";
+import PageHeader from "@components/Page/Header";
 // import PageHeader from "@components/Page/Header";
 import PageSection from "@components/Page/Section";
 import { ScanMode } from "@type/scan";
@@ -12,6 +13,8 @@ function Home() {
 
     return (
         <PageContainer>
+            <PageHeader>Home</PageHeader>
+
             {/* <PageSection>
                 <div className="flex flex-col items-center gap-2">
                     <h1 className="text-2xl font-bold">Your ID</h1>
@@ -22,10 +25,11 @@ function Home() {
             <PageSection>
                 {appSettings.linkedDevices.length ? (
                     <>
-                        <h1 className="text-2xl font-bold">Linked devices</h1>
+                        <h1 className="text-xl font-bold">Linked devices</h1>
+                        <div className="divider m-0"></div>
                         <div>
                             {appSettings.linkedDevices.map((device) => (
-                                <DeviceCard savedDevice={device} />
+                                <DeviceCard key={device.id} savedDevice={device} />
                             ))}
                         </div>
                     </>

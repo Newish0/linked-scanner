@@ -1,4 +1,4 @@
-import { Device, LinkedDevice } from "@shared/type/device";
+import { Device, DeviceId, LinkedDevice } from "@shared/type/device";
 import { randomDeviceId } from "@shared/utils/device";
 import { generateAdjNounPair } from "@shared/utils/wordGenerator";
 import { atom, useAtom } from "jotai";
@@ -39,9 +39,12 @@ export const useAppSettings = () => {
     const [appSettings, setAppSettings] = useAtom(appSettingsAtom);
 
     // Custom setter function that updates both atom and localStorage
-    const setAppSettingsWithLocalStorage = (newSettings: AppSettings) => {
-        setAppSettings(newSettings);
-        localStorage.setItem("appSettings", JSON.stringify(newSettings));
+    const setAppSettingsWithLocalStorage = (partialSettings: Partial<AppSettings>) => {
+        setAppSettings((oldSettings) => {
+            const newSettings = { ...oldSettings, ...partialSettings };
+            localStorage.setItem("appSettings", JSON.stringify(newSettings));
+            return newSettings;
+        });
     };
 
     return [appSettings, setAppSettingsWithLocalStorage] as const;

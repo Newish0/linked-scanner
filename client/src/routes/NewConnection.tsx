@@ -3,7 +3,7 @@ import Alert from "@components/Alert";
 import PageContainer from "@components/Page/Container";
 import PageSection from "@components/Page/Section";
 import { useGlobalPeer } from "@hooks/useGlobalPeer";
-import { DeviceId } from "@shared/type/device";
+import { DeviceId, LinkedDevice } from "@shared/type/device";
 import { ConnectionMetadata } from "@shared/type/peer";
 import { deviceIdToPeerId } from "@shared/utils/convert";
 import { isDeviceId } from "@shared/utils/device";
@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export default function NewConnection() {
-    const [appSettings] = useAppSettings();
+    const [appSettings, setAppSettings] = useAppSettings();
     const [searchParams] = useSearchParams();
     const { connect, localPeer } = useGlobalPeer({ verbose: true });
 
@@ -28,6 +28,15 @@ export default function NewConnection() {
         if (!localPeer) return;
 
         if (deviceId && isDeviceId(deviceId)) {
+            const existingDevice = appSettings.linkedDevices.find(
+                (device) => device.id === deviceId
+            );
+
+            if (existingDevice) {
+                console.error("DEVICE ALREADY EXIST. \n TODO: Handle existing device.");
+                return;
+            }
+
             const metadata: ConnectionMetadata = {
                 host: {
                     id: deviceId as DeviceId,
@@ -41,12 +50,29 @@ export default function NewConnection() {
             connect(deviceIdToPeerId(deviceId as DeviceId), {
                 metadata,
             })
-                .then((newConnection) => newConnection && setNewConnection(newConnection))
+                .then((newConnection) => {
+                    if (newConnection) {
+                        setNewConnection(newConnection);
+
+                        const newLinkedDevice: LinkedDevice = {
+                            createdAt: new Date(),
+                            id: deviceId as DeviceId,
+                            lastConnected: new Date(),
+                            name: name ?? "n/a",
+                            numConnected: 1,
+                        };
+
+                        setAppSettings({
+                            ...appSettings,
+                            linkedDevices: [...appSettings.linkedDevices, newLinkedDevice],
+                        });
+                    } // if
+                })
                 .catch(() => setConnErr(`Failed to connection to host.`));
         } else {
             setHasDeviceIdErr(true);
         }
-    }, [appSettings.thisDevice, connect, deviceId, localPeer, name]);
+    }, [appSettings, appSettings.thisDevice, connect, deviceId, localPeer, name, setAppSettings]);
 
     if (hasDeviceIdErr) {
         return (

@@ -171,5 +171,12 @@ export function useGlobalPeer({
         return connPromise;
     };
 
-    return { localPeer, connections, sendMessage, connect } as const;
+    const close = (connection: DataConnection) => {
+        const i = connections.findIndex((conn) => conn === connection);
+        if (i === -1) throw new Error("Cannot close a nonexisting connection");
+        connections[i].close();
+        connections.splice(i, 1);
+    };
+
+    return { localPeer, connections, sendMessage, connect, close } as const;
 }
