@@ -30,8 +30,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Go into client directory
-        run: cd client
+      - name: Change working directory to `client`
+        run: |
+          cd client
+        working-directory: client
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
