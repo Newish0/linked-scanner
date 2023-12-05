@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Change working directory to `client`
+      - name: Change working directory to client
         run: |
           cd client
         working-directory: client
