@@ -1,4 +1,4 @@
-import { Device, DeviceId, LinkedDevice } from "@shared/type/device";
+import { Device, LinkedDevice } from "@shared/type/device";
 import { randomDeviceId } from "@shared/utils/device";
 import { generateAdjNounPair } from "@shared/utils/wordGenerator";
 import { atom, useAtom } from "jotai";

@@ -4,8 +4,8 @@ import { ConnectionMetadata } from "@shared/type/peer";
 import { useAppSettings } from "@atoms/appsettings";
 import { useGlobalPeer } from "@hooks/useGlobalPeer";
 import { deviceIdToPeerId } from "@shared/utils/convert";
-import { useState } from "react";
-import { DataConnection } from "peerjs";
+import { useEffect, useState } from "react";
+
 
 interface DeviceCardProps
     extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -14,10 +14,18 @@ interface DeviceCardProps
 
 export default function DeviceCard({ savedDevice, ...props }: DeviceCardProps) {
     const [appSettings] = useAppSettings();
-    const { connect, close } = useGlobalPeer({ verbose: true });
+    const { connect, close, connections } = useGlobalPeer({ verbose: true });
 
     const [connecting, setConnecting] = useState(false);
-    const [connection, setConnection] = useState<DataConnection>();
+    const [connected, setConnected] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (connections.find(({ metadata }) => metadata.host.id === savedDevice.id)) {
+            setConnected(true);
+        } else {
+            setConnected(false);
+        }
+    }, [connections, savedDevice.id]);
 
     const handleConnect = () => {
         const metadata: ConnectionMetadata = {
@@ -29,11 +37,7 @@ export default function DeviceCard({ savedDevice, ...props }: DeviceCardProps) {
         connect(deviceIdToPeerId(savedDevice.id), {
             metadata,
         })
-            .then((newConnection) => {
-                if (newConnection) {
-                    setConnection(newConnection);
-                } // if
-            })
+            .then(() => {})
             .catch(() => {
                 // TODO
             })
@@ -42,6 +46,10 @@ export default function DeviceCard({ savedDevice, ...props }: DeviceCardProps) {
 
     const handleDisconnect = () => {
         try {
+            const connection = connections.find(
+                ({ metadata }) => metadata.host.id === savedDevice.id
+            );
+
             if (connection) {
                 close(connection);
             }
@@ -62,7 +70,7 @@ export default function DeviceCard({ savedDevice, ...props }: DeviceCardProps) {
             </div>
 
             <div className="flex items-center">
-                {savedDevice.connected ? (
+                {connected ? (
                     <span className="relative inline-flex">
                         <button
                             className="btn btn-outline btn-error btn-md"

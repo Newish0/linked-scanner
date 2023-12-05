@@ -176,6 +176,7 @@ export function useGlobalPeer({
         if (i === -1) throw new Error("Cannot close a nonexisting connection");
         connections[i].close();
         connections.splice(i, 1);
+        setConnections([...connections]);
     };
 
     return { localPeer, connections, sendMessage, connect, close } as const;

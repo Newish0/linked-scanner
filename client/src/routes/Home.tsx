@@ -27,7 +27,7 @@ function Home() {
                     <>
                         <h1 className="text-xl font-bold">Linked devices</h1>
                         <div className="divider m-0"></div>
-                        <div>
+                        <div className="space-y-4">
                             {appSettings.linkedDevices.map((device) => (
                                 <DeviceCard key={device.id} savedDevice={device} />
                             ))}
