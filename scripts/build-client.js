@@ -16,9 +16,9 @@ const runNpmCommand = (directory, command) => {
 runNpmCommand('client', 'install');
 runNpmCommand('client', 'run build');
 
-// Copy the build output to the dist/client directory
-const sourceDir = path.resolve(new URL(import.meta.url).pathname, '../../', 'client', 'dist');
-const destDir = path.resolve(new URL(import.meta.url).pathname, '../../', 'dist', 'client');
+// // Copy the build output to the dist/client directory
+// const sourceDir = path.resolve(new URL(import.meta.url).pathname, '../../', 'client', 'dist');
+// const destDir = path.resolve(new URL(import.meta.url).pathname, '../../', 'dist', 'client');
 
-fs.mkdirSync(destDir, { recursive: true });
-fs.copyFileSync(sourceDir, destDir);
+// fs.mkdirSync(destDir, { recursive: true });
+// fs.copyFileSync(sourceDir, destDir);
