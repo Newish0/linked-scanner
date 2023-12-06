@@ -3,6 +3,8 @@ import { randomDeviceId } from "@shared/utils/device";
 import { generateAdjNounPair } from "@shared/utils/wordGenerator";
 import { atom, useAtom } from "jotai";
 
+import pkg from "@shared/../package.json";
+
 type AppSettings = {
     thisDevice: Device;
     linkedDevices: LinkedDevice[];
@@ -10,9 +12,11 @@ type AppSettings = {
     lastUsedCameraId: string | null;
 };
 
+const STORAGE_KEY = `${pkg.name}-app-settings`;
+
 const getInitialAppSettings = () => {
     // Retrieve app settings from local storage or use default values
-    const settingsJSON = localStorage.getItem("appSettings");
+    const settingsJSON = localStorage.getItem(STORAGE_KEY);
 
     const defaultSettings: AppSettings = {
         thisDevice: {
@@ -42,7 +46,7 @@ export const useAppSettings = () => {
     const setAppSettingsWithLocalStorage = (partialSettings: Partial<AppSettings>) => {
         setAppSettings((oldSettings) => {
             const newSettings = { ...oldSettings, ...partialSettings };
-            localStorage.setItem("appSettings", JSON.stringify(newSettings));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
             return newSettings;
         });
     };
