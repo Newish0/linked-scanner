@@ -36,9 +36,7 @@ jobs:
           node-version: 20
           cache: 'npm'
       - name: Build Client
-        run: |
-          npm run build-client
-          rsync -a client/dist dist/client
+        run: npm run build-client
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
