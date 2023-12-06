@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "build-client": "node scripts/build-client.js & rsync -a client/dist dist/client"
+        "build-client": "node scripts/build-client.js && rsync -a client/dist dist/client"
     },
     "dependencies": {},
     "devDependencies": {}
