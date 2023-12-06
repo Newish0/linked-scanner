@@ -26,7 +26,7 @@ export default function Root() {
 
     return (
         <>
-            <div className="w-screen h-screen fixed flex flex-col">
+            <div className="w-screen h-[100dvh] fixed flex flex-col">
                 <main className="overflow-auto h-full">
                     <Outlet />
                 </main>
