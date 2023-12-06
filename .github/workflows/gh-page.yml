@@ -30,12 +30,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Navigate to Subdirectory
+        run: cd ./client
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
           node-version: 20
           cache: 'npm'
-          path: './client'
       - name: Install dependencies
         run: npm install
       - name: Build
