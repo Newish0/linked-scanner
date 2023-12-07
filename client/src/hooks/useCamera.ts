@@ -5,6 +5,7 @@ type UseCameraProps = {
     cameraId?: string;
     idealWidth?: number;
     idealHeight?: number;
+    aspectRatio?: number;
     filter?: string;
 };
 
@@ -17,6 +18,7 @@ const useCamera = ({
     cameraId,
     idealWidth = 720,
     idealHeight = 1280,
+    aspectRatio = 16 / 9,
     filter = "contrast(500%)",
 }: UseCameraProps = {}): UseCameraResult => {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -31,6 +33,7 @@ const useCamera = ({
                         deviceId: cameraId,
                         width: { ideal: idealWidth },
                         height: { ideal: idealHeight },
+                        aspectRatio: { exact: aspectRatio },
                         facingMode: { ideal: "environment" },
                     },
                 };
@@ -52,7 +55,7 @@ const useCamera = ({
                 mediaStream.getTracks().forEach((track) => track.stop());
             }
         };
-    }, [cameraId, idealHeight, idealWidth]);
+    }, [cameraId, aspectRatio, idealHeight, idealWidth]);
 
     useEffect(() => {
         const drawOnCanvas = () => {

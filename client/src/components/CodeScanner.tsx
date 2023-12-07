@@ -13,13 +13,31 @@ interface CodeScannerProps {
 
 export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }: CodeScannerProps) {
     const [containerId] = useState(crypto.randomUUID());
+    const [screenAspectRatio, setScreenAspectRatio] = useState<number>(
+        window.innerWidth / window.innerHeight
+    );
 
     const { videoRef, canvasRef } = useCamera({
         cameraId,
-        idealWidth: undefined,
-        idealHeight: 1920,
+        // idealWidth: undefined,
+        // idealHeight: 1920,
+        aspectRatio: screenAspectRatio,
         filter: "contrast(250%) brightness(75%)",
     });
+
+    console.log(screenAspectRatio, window.innerWidth, window.innerHeight);
+
+    useEffect(() => {
+        const handleScreenResize = () => {
+            setScreenAspectRatio(window.innerWidth / window.innerHeight);
+        };
+
+        window.addEventListener("resize", handleScreenResize);
+
+        return () => {
+            window.removeEventListener("resize", handleScreenResize);
+        };
+    }, []);
 
     useEffect(() => {
         let scanInterval: NodeJS.Timeout;
