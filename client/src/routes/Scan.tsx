@@ -43,9 +43,9 @@ export default function Scan() {
         console.log("URL SCHEME", parsedUrlScheme);
 
         if (parsedUrlScheme) {
-            console.log("HAS URL SCHEME")
-            if (parsedUrlScheme.path === "/link") {
-                console.log("IS LINK")
+            console.log("HAS URL SCHEME");
+            if (parsedUrlScheme.action === "link") {
+                console.log("IS LINK");
                 if (parsedUrlScheme.id && isDeviceId(parsedUrlScheme.id)) {
                     console.log("BEFORE NAVIGATE", parsedUrlScheme);
                     navigate({
@@ -59,7 +59,7 @@ export default function Scan() {
                 } else console.error(parsedUrlScheme.id, "is not a valid device id.");
             }
         } else {
-            console.log("SEND MESSAGE", result.decodedText)
+            console.log("SEND MESSAGE", result.decodedText);
             sendMessage({
                 auth: null, // TODO
                 payload: result.decodedText,

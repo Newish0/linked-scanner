@@ -5,18 +5,23 @@ import { isDeviceId } from "./device";
 
 /**
  *
+ * @param url Custom URL scheme in format `linkedscanner://action?param1=foo&param2=bar`
+ * @returns
  */
 export function parseURLScheme(url: string) {
+    const expectedProtocol = `${URL_SCHEME_PROTOCOL}:`;
+    const leadingSubstr = `${URL_SCHEME_PROTOCOL}://`;
+
     try {
         const parsedUrl = new URL(url);
 
         // Ensure protocol
-        if (parsedUrl.protocol !== `${URL_SCHEME_PROTOCOL}:`) {
+        if (parsedUrl.protocol !== expectedProtocol) {
             return null;
         }
 
-        // Extract path and parameters
-        const path = parsedUrl.pathname.substring(1); // Remove the leading '/'
+        const index = url.indexOf("?");
+        const action = url.slice(leadingSubstr.length, index === -1 ? undefined : index);
         const params = new URLSearchParams(parsedUrl.search);
 
         // Access the values using the get method
@@ -24,7 +29,7 @@ export function parseURLScheme(url: string) {
         const name = params.get("name");
         const token = params.get("token");
 
-        return { path, id, name, token };
+        return { action, id, name, token };
     } catch (error) {
         return null;
     }
