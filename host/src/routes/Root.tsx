@@ -6,6 +6,7 @@ import PrepConnectionLoader from "@components/loaders/PrepConnection";
 import { useEffect } from "react";
 import { IconHistory, IconHome, IconSettings } from "@tabler/icons-react";
 import { twMerge } from "tailwind-merge";
+import { debounce } from "lodash";
 
 import { invoke } from "@tauri-apps/api/tauri";
 
@@ -15,10 +16,10 @@ export default function Root() {
     // Init connection
     const { localPeer } = useGlobalPeer({
         verbose: true,
-        handleData(data: unknown) {
+        handleData: debounce((data: unknown) => {
             console.log("DATA HANDLED", data);
             invoke("fire_key_sequence", { keySequence: (data as { payload?: string })?.payload });
-        },
+        }, 300),
     });
 
     useEffect(() => {
