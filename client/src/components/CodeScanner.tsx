@@ -25,8 +25,6 @@ export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }:
         filter: "contrast(250%) brightness(75%)",
     });
 
-    console.log(screenAspectRatio, window.innerWidth, window.innerHeight);
-
     useEffect(() => {
         const handleScreenResize = () => {
             setScreenAspectRatio(window.innerWidth / window.innerHeight);

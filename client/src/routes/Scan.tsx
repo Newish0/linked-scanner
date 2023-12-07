@@ -40,10 +40,14 @@ export default function Scan() {
         console.log("SCANNED", result);
         const parsedUrlScheme = parseURLScheme(result.decodedText);
 
+        console.log("URL SCHEME", parsedUrlScheme);
+
         if (parsedUrlScheme) {
+            console.log("HAS URL SCHEME")
             if (parsedUrlScheme.path === "/link") {
+                console.log("IS LINK")
                 if (parsedUrlScheme.id && isDeviceId(parsedUrlScheme.id)) {
-                    console.log(parsedUrlScheme);
+                    console.log("BEFORE NAVIGATE", parsedUrlScheme);
                     navigate({
                         pathname: `/connection/new`,
                         search: createSearchParams({
@@ -55,6 +59,7 @@ export default function Scan() {
                 } else console.error(parsedUrlScheme.id, "is not a valid device id.");
             }
         } else {
+            console.log("SEND MESSAGE", result.decodedText)
             sendMessage({
                 auth: null, // TODO
                 payload: result.decodedText,
