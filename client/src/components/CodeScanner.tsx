@@ -38,18 +38,20 @@ export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }:
         // idealWidth: undefined,
         // idealHeight: 1920,
         aspectRatio: screenAspectRatio,
-        beforeDraw(ctx) {
+        beforeDraw(ctx, frameNumber) {
             // Ensure source over mode before overlay creation
             ctx.globalCompositeOperation = "source-over";
 
-            const boxLen = Math.min(ctx.canvas.width, ctx.canvas.height) * CAPTURE_AREA_RATIO;
-            const crossLen = boxLen * 0.5;
+            let boxLen = Math.min(ctx.canvas.width, ctx.canvas.height) * CAPTURE_AREA_RATIO;
+            let crossLen = boxLen * 0.5;
             const radius = remToPx(extractThemeUtilitiesFromDOM().roundedBox) ?? 0;
 
             // Create overlay frame
             ctx.save();
             if (scanStatus === ScanStatus.Scanning) {
                 ctx.strokeStyle = extractThemeColorsFromDOM().primary;
+                boxLen *= (Math.sin(frameNumber / 30 + (3 * Math.PI) / 2) + 1) / 50 + 1;
+                crossLen = boxLen * 0.5;
             } else if (scanStatus === ScanStatus.Succuss) {
                 ctx.strokeStyle = extractThemeColorsFromDOM().success;
             } else if (scanStatus === ScanStatus.Fail) {

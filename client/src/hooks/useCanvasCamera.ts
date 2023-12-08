@@ -1,12 +1,13 @@
 // useCamera.ts
 import { useEffect, useRef } from "react";
 
-type CanvasCameraMiddleWare = (ctx: CanvasRenderingContext2D) => void;
+type CanvasCameraMiddleWare = (ctx: CanvasRenderingContext2D, frameNumber: number) => void;
 
 type UseCameraProps = {
     cameraId?: string;
     idealWidth?: number;
     idealHeight?: number;
+    idealFrameRate?: number;
     aspectRatio?: number;
     beforeDraw?: CanvasCameraMiddleWare;
     afterDraw?: CanvasCameraMiddleWare;
@@ -21,6 +22,7 @@ const useCanvasCamera = ({
     cameraId,
     idealWidth = 720,
     idealHeight = 1280,
+    idealFrameRate = 30,
     aspectRatio = 16 / 9,
     beforeDraw,
     afterDraw,
@@ -39,6 +41,7 @@ const useCanvasCamera = ({
                         height: { ideal: idealHeight },
                         aspectRatio: { exact: aspectRatio },
                         facingMode: { ideal: "environment" },
+                        frameRate: { ideal: idealFrameRate },
                     },
                 };
 
@@ -63,6 +66,7 @@ const useCanvasCamera = ({
 
     useEffect(() => {
         let req: number;
+        let frameNumber = 0;
         const drawOnCanvas = () => {
             const video = videoRef.current;
             const canvas = canvasRef.current;
@@ -76,11 +80,13 @@ const useCanvasCamera = ({
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                if (beforeDraw) beforeDraw(ctx);
+                if (beforeDraw) beforeDraw(ctx, frameNumber);
 
                 ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
 
-                if (afterDraw) afterDraw(ctx);
+                if (afterDraw) afterDraw(ctx, frameNumber);
+
+                frameNumber++;
             }
 
             req = requestAnimationFrame(drawOnCanvas);
