@@ -4,7 +4,7 @@ import { Html5QrcodeResult } from "html5-qrcode/esm/core";
 import useCanvasCamera from "@hooks/useCanvasCamera";
 import { twMerge } from "tailwind-merge";
 
-import { createRoundedRectPath, roundedRect, fillRoundedRect } from "@shared/utils/canvas";
+import { createRoundedRectPath, roundedRect } from "@shared/utils/canvas";
 import {
     extractThemeColorsFromDOM,
     extractThemeUtilitiesFromDOM,
@@ -113,10 +113,17 @@ export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }:
             onQRCodeScan(result);
         };
 
+        const handleQRCodeFail = () => {
+            if (ScanStatus.Scanning) setScanStatus(ScanStatus.Fail);
+        };
+
         const init = async () => {
             const html5Qrcode = new Html5Qrcode(containerId, false);
 
             const scanForQR = () => {
+                // Only run if in scanning mode
+                if (scanStatus !== ScanStatus.Scanning) return;
+
                 const canvas = canvasRef.current;
                 if (!canvas) return;
                 const ctx = canvas.getContext("2d");
@@ -160,13 +167,25 @@ export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }:
         return () => {
             clearInterval(scanInterval);
         };
-    }, [canvasRef, containerId, fps, onQRCodeScan]);
+    }, [canvasRef, containerId, fps, onQRCodeScan, scanStatus]);
 
-    const handleQRCodeFail = () => {};
+    const handleMouseDown = () => {
+        setScanStatus(ScanStatus.Scanning);
+    };
+
+    const handleMouseUp = () => {
+        if (scanStatus === ScanStatus.Scanning) setScanStatus(null);
+    };
 
     return (
         <div className="h-full">
-            <div className="relative h-full">
+            <div
+                className="relative h-full"
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onTouchStart={handleMouseDown}
+                onTouchEnd={handleMouseUp}
+            >
                 <video
                     ref={videoRef}
                     autoPlay
