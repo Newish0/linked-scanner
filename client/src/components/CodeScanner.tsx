@@ -50,6 +50,8 @@ export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }:
             ctx.save();
             if (scanStatus === ScanStatus.Scanning) {
                 ctx.strokeStyle = extractThemeColorsFromDOM().primary;
+
+                // Pulsing animation
                 boxLen *= (Math.sin(frameNumber / 30 + (3 * Math.PI) / 2) + 1) / 50 + 1;
                 crossLen = boxLen * 0.5;
             } else if (scanStatus === ScanStatus.Succuss) {
