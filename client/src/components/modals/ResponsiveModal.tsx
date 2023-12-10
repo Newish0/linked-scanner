@@ -1,23 +1,33 @@
 import { useEffect, useRef } from "react";
 
-type ModalWithFooter = {
-    footer: React.ReactNode; // Replace this with the actual type of your footer
-    onClose?: never;
-};
-
-type ModalWithOnClose = {
-    onClose?: () => void;
-    footer?: never;
-};
-
 type ResponsiveModalProps = {
     isOpen: boolean;
     title?: string;
     children?: React.ReactNode;
-} & (ModalWithFooter | ModalWithOnClose);
+    footer?: React.ReactNode;
+    onClose?: () => void;
+};
 
-export default function ResponsiveModal({ isOpen,title, children, ...props }: ResponsiveModalProps) {
+export default function ResponsiveModal({
+    isOpen,
+    title,
+    children,
+    ...props
+}: ResponsiveModalProps) {
     const modalRef = useRef<HTMLDialogElement | null>(null);
+
+    useEffect(() => {
+        const handleClose = () => {
+            if (props.onClose) props.onClose();
+        };
+
+        const modal = modalRef.current;
+        modal?.addEventListener("close", handleClose);
+
+        return () => {
+            modal?.removeEventListener("close", handleClose);
+        };
+    }, [props]);
 
     useEffect(() => {
         if (isOpen) {
@@ -26,10 +36,6 @@ export default function ResponsiveModal({ isOpen,title, children, ...props }: Re
             modalRef.current?.close();
         }
     }, [isOpen]);
-
-    const handleClose = () => {
-        if (props.onClose) props.onClose();
-    };
 
     return (
         <>
@@ -40,11 +46,11 @@ export default function ResponsiveModal({ isOpen,title, children, ...props }: Re
                     <div className="py-4">{children}</div>
 
                     <div className="modal-action">
-                        {!props.footer && (
+                        {props.footer ? (
+                            props.footer
+                        ) : (
                             <form method="dialog">
-                                <button className="btn" onClick={handleClose}>
-                                    Close
-                                </button>
+                                <button className="btn">Close</button>
                             </form>
                         )}
                     </div>

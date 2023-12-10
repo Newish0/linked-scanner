@@ -54,5 +54,10 @@ export const useAppSettings = () => {
         });
     };
 
-    return [appSettings, setAppSettingsWithLocalStorage] as const;
+    const resetAppSettings = () => {
+        localStorage.removeItem(STORAGE_KEY);
+        setAppSettings(getInitialAppSettings());
+    };
+
+    return [appSettings, setAppSettingsWithLocalStorage, resetAppSettings] as const;
 };
