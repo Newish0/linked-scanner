@@ -46,66 +46,82 @@ export default function CodeScanner({
         // idealWidth: undefined,
         // idealHeight: 1920,
         aspectRatio: screenAspectRatio,
-        beforeDraw(ctx, frameNumber) {
+
+        afterDraw(ctx, frameNumber) {
+            ctx.save();
+
+            // Ensure composition mode
+            ctx.globalCompositeOperation = "source-over";
+
+            const layer = document.createElement("canvas");
+            const layerCtx = layer.getContext("2d");
+            if (!layer || !layerCtx) return;
+
+            layer.width = ctx.canvas.width;
+            layer.height = ctx.canvas.height;
+
             let boxLen = Math.min(ctx.canvas.width, ctx.canvas.height) * CAPTURE_AREA_RATIO;
             let crossLen = boxLen * 0.5;
             const radius = remToPx(extractThemeUtilitiesFromDOM().roundedBox) ?? 0;
 
             // Create overlay frame
-            ctx.save();
+            layerCtx.save();
             if (scanStatus === ScanStatus.Scanning) {
-                ctx.strokeStyle = extractThemeColorsFromDOM().primary;
+                layerCtx.strokeStyle = extractThemeColorsFromDOM().primary;
 
                 // Pulsing animation
                 boxLen *= (Math.sin(frameNumber / 30 + (3 * Math.PI) / 2) + 1) / 50 + 1;
                 crossLen = boxLen * 0.5;
             } else if (scanStatus === ScanStatus.Succuss) {
-                ctx.strokeStyle = extractThemeColorsFromDOM().success;
+                layerCtx.strokeStyle = extractThemeColorsFromDOM().success;
             } else if (scanStatus === ScanStatus.Fail) {
-                ctx.strokeStyle = extractThemeColorsFromDOM().error;
+                layerCtx.strokeStyle = extractThemeColorsFromDOM().error;
             } else {
-                ctx.strokeStyle = extractThemeColorsFromDOM().neutralContent;
+                layerCtx.strokeStyle = extractThemeColorsFromDOM().neutralContent;
             }
-            ctx.lineWidth = boxLen * 0.03;
+            layerCtx.lineWidth = boxLen * 0.03;
             roundedRect(
-                ctx,
-                (ctx.canvas.width - boxLen) / 2,
-                (ctx.canvas.height - boxLen) / 2,
+                layerCtx,
+                (layerCtx.canvas.width - boxLen) / 2,
+                (layerCtx.canvas.height - boxLen) / 2,
                 boxLen,
                 boxLen,
                 radius
             );
-            ctx.clearRect(0, (ctx.canvas.height - crossLen) / 2, ctx.canvas.width, crossLen);
-            ctx.clearRect((ctx.canvas.width - crossLen) / 2, 0, crossLen, ctx.canvas.height);
-            ctx.restore();
+            layerCtx.clearRect(
+                0,
+                (layerCtx.canvas.height - crossLen) / 2,
+                layerCtx.canvas.width,
+                crossLen
+            );
+            layerCtx.clearRect(
+                (layerCtx.canvas.width - crossLen) / 2,
+                0,
+                crossLen,
+                layerCtx.canvas.height
+            );
+            layerCtx.restore();
 
             // Create bg overlay
-            ctx.save();
-            ctx.globalCompositeOperation = "destination-over";
-            ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            ctx.beginPath();
+            layerCtx.save();
+            layerCtx.globalCompositeOperation = "destination-over";
+            layerCtx.fillStyle = "rgba(0, 0, 0, 0.5)";
+            layerCtx.fillRect(0, 0, layerCtx.canvas.width, layerCtx.canvas.height);
+            layerCtx.beginPath();
             createRoundedRectPath(
-                ctx,
-                (ctx.canvas.width - boxLen) / 2,
-                (ctx.canvas.height - boxLen) / 2,
+                layerCtx,
+                (layerCtx.canvas.width - boxLen) / 2,
+                (layerCtx.canvas.height - boxLen) / 2,
                 boxLen,
                 boxLen,
                 radius
             );
-            ctx.clip();
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            layerCtx.clip();
+            layerCtx.clearRect(0, 0, layerCtx.canvas.width, layerCtx.canvas.height);
+            layerCtx.restore();
+
+            ctx.drawImage(layer, 0, 0);
             ctx.restore();
-
-            // Ensure camera stream draws below overlay
-            ctx.globalCompositeOperation = "destination-atop";
-        },
-        afterDraw(ctx) {
-            // Revert composition mode
-            ctx.globalCompositeOperation = "source-over";
-
-            ctx.fillStyle = "red";
-            ctx.fillRect(50, 50, 100, 100);
         },
     });
 
