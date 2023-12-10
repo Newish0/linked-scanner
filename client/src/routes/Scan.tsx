@@ -90,6 +90,8 @@ export default function Scan() {
                         showFilter={true}
                         onQRCodeScan={handleQRCodeScan}
                         debug={appSettings.showCameraCanvas}
+                        contrastOffset={appSettings.canvasFilter.contrastOffset}
+                        brightnessOffset={appSettings.canvasFilter.brightnessOffset}
                     />
                 )}
 

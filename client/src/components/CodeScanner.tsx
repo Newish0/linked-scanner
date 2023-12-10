@@ -17,6 +17,8 @@ interface CodeScannerProps {
     onQRCodeScan: (result: Html5QrcodeResult) => void;
     showFilter: boolean;
     fps: number;
+    contrastOffset: number;
+    brightnessOffset: number;
     debug: boolean;
 }
 
@@ -34,6 +36,8 @@ export default function CodeScanner({
     showFilter,
     fps,
     debug,
+    contrastOffset,
+    brightnessOffset,
 }: CodeScannerProps) {
     const [containerId] = useState(crypto.randomUUID());
     const [screenAspectRatio, setScreenAspectRatio] = useState<number>(
@@ -47,8 +51,15 @@ export default function CodeScanner({
         // idealHeight: 1920,
         aspectRatio: screenAspectRatio,
 
+        beforeDraw(ctx) {
+            ctx.filter = `contrast(${100 + contrastOffset}%) brightness(${
+                100 + brightnessOffset
+            }%)`;
+        },
+
         afterDraw(ctx, frameNumber) {
             ctx.save();
+            ctx.filter = "";
 
             // Ensure composition mode
             ctx.globalCompositeOperation = "source-over";
@@ -251,4 +262,6 @@ CodeScanner.defaultProps = {
     showFilter: false,
     fps: 10,
     debug: false,
+    contrastOffset: 0,
+    brightnessOffset: 0,
 };

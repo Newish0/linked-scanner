@@ -12,6 +12,11 @@ type AppSettings = {
     lastUsedCameraId: string | null;
 
     showCameraCanvas: boolean;
+
+    canvasFilter: {
+        contrastOffset: number;
+        brightnessOffset: number;
+    };
 };
 
 const STORAGE_KEY = `${pkg.name}-app-settings`;
@@ -30,6 +35,11 @@ const getInitialAppSettings = () => {
         theme: "night",
         lastUsedCameraId: null,
         showCameraCanvas: false,
+
+        canvasFilter: {
+            contrastOffset: 0,
+            brightnessOffset: 0,
+        },
     };
 
     const settings: AppSettings = settingsJSON ? JSON.parse(settingsJSON) : defaultSettings;

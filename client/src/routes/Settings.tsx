@@ -7,6 +7,7 @@ import SettingsOption from "@components/Page/SettingsOption";
 import ResponsiveModal from "@components/modals/ResponsiveModal";
 import { IconAbc, IconBug, IconRefreshAlert } from "@tabler/icons-react";
 import { useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 function Settings() {
     const [appSettings, setAppSettings] = useAppSettings();
@@ -24,6 +25,11 @@ function Settings() {
                     <SettingsOption title="Device ID" icon={<IconAbc />}>
                         <IDInput deviceId={appSettings.thisDevice.id} size="sm" readOnly />
                     </SettingsOption>
+                </SettingSection>
+
+                <SettingSection title="Scanning">
+                    <ContrastOption />
+                    <BrightnessOption />
                 </SettingSection>
 
                 <SettingSection title="Developer">
@@ -56,6 +62,99 @@ function SettingSection({ children, title }: { children: React.ReactNode; title:
 
             {children}
         </PageSection>
+    );
+}
+
+function ContrastOption() {
+    const [appSettings, setAppSettings] = useAppSettings();
+    const [showTooltip, setShowTooltip] = useState(false);
+
+    const handleContrastChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+        setAppSettings({
+            canvasFilter: {
+                ...appSettings.canvasFilter,
+                contrastOffset: evt.target.valueAsNumber,
+            },
+        });
+    };
+
+    const handleTouchStart = () => {
+        setShowTooltip(true);
+    };
+
+    const handleTouchEnd = () => {
+        setShowTooltip(false);
+    };
+
+    return (
+        <SettingsOption
+            title="Contrast"
+            icon={<IconAbc />}
+            description="Adjusts camera feed filter."
+        >
+            <div
+                className={twMerge("tooltip w-full", showTooltip ? "tooltip-open" : "")}
+                data-tip={appSettings.canvasFilter.contrastOffset + "%"}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+            >
+                <input
+                    type="range"
+                    min={-100}
+                    max={100}
+                    step={10}
+                    value={appSettings.canvasFilter.contrastOffset}
+                    onChange={handleContrastChange}
+                    className="range range-xs range-primary"
+                />
+            </div>
+        </SettingsOption>
+    );
+}
+
+function BrightnessOption() {
+    const [appSettings, setAppSettings] = useAppSettings();
+    const [showTooltip, setShowTooltip] = useState(false);
+
+    const handleTouchStart = () => {
+        setShowTooltip(true);
+    };
+
+    const handleTouchEnd = () => {
+        setShowTooltip(false);
+    };
+
+    const handleBrightnessChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+        setAppSettings({
+            canvasFilter: {
+                ...appSettings.canvasFilter,
+                brightnessOffset: evt.target.valueAsNumber,
+            },
+        });
+    };
+    return (
+        <SettingsOption
+            title="Brightness"
+            icon={<IconAbc />}
+            description="Adjusts camera feed filter."
+        >
+            <div
+                className={twMerge("tooltip w-full", showTooltip ? "tooltip-open" : "")}
+                data-tip={appSettings.canvasFilter.brightnessOffset + "%"}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+            >
+                <input
+                    type="range"
+                    min={-100}
+                    max={100}
+                    step={10}
+                    value={appSettings.canvasFilter.brightnessOffset}
+                    onChange={handleBrightnessChange}
+                    className="range range-xs range-primary"
+                />
+            </div>
+        </SettingsOption>
     );
 }
 

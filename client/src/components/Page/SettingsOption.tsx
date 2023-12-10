@@ -35,7 +35,7 @@ export default function SettingsOption({
                     >
                         {title}
                     </h3>
-                    <p>{description}</p>
+                    <p className="leading-5">{description}</p>
                 </div>
 
                 {position === SettingsOptionPosition.Right && (
