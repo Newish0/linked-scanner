@@ -103,6 +103,9 @@ export default function CodeScanner({
         afterDraw(ctx) {
             // Revert composition mode
             ctx.globalCompositeOperation = "source-over";
+
+            ctx.fillStyle = "red";
+            ctx.fillRect(50, 50, 100, 100);
         },
     });
 
