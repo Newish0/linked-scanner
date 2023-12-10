@@ -214,7 +214,7 @@ export default function CodeScanner({
     return (
         <div className="h-full">
             <div
-                className="relative h-full touch-none"
+                className="relative h-full select-none"
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
                 onTouchStart={handleMouseDown}
