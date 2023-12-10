@@ -17,6 +17,7 @@ interface CodeScannerProps {
     onQRCodeScan: (result: Html5QrcodeResult) => void;
     showFilter: boolean;
     fps: number;
+    autoScan: boolean;
     contrastOffset: number;
     brightnessOffset: number;
     debug: boolean;
@@ -35,6 +36,7 @@ export default function CodeScanner({
     onQRCodeScan,
     showFilter,
     fps,
+    autoScan,
     debug,
     contrastOffset,
     brightnessOffset,
@@ -43,7 +45,9 @@ export default function CodeScanner({
     const [screenAspectRatio, setScreenAspectRatio] = useState<number>(
         window.innerWidth / window.innerHeight
     );
-    const [scanStatus, setScanStatus] = useState<ScanStatus | null>(null);
+    const [scanStatus, setScanStatus] = useState<ScanStatus | null>(
+        autoScan ? ScanStatus.Scanning : null
+    );
 
     const { videoRef, canvasRef } = useCanvasCamera({
         cameraId,
@@ -154,6 +158,7 @@ export default function CodeScanner({
         const handleQRCodeScan = (result: Html5QrcodeResult) => {
             setScanStatus(ScanStatus.Succuss);
             onQRCodeScan(result);
+            if (autoScan) setTimeout(() => setScanStatus(ScanStatus.Scanning), 2000);
         };
 
         const handleQRCodeFail = () => {
@@ -219,7 +224,11 @@ export default function CodeScanner({
     };
 
     const handleMouseUp = () => {
-        if (scanStatus === ScanStatus.Scanning) setScanStatus(null);
+        if (autoScan) {
+            setScanStatus(ScanStatus.Scanning);
+        } else if (scanStatus === ScanStatus.Scanning) {
+            setScanStatus(null);
+        }
     };
 
     return (
@@ -261,6 +270,7 @@ export default function CodeScanner({
 CodeScanner.defaultProps = {
     showFilter: false,
     fps: 10,
+    autoScan: true,
     debug: false,
     contrastOffset: 0,
     brightnessOffset: 0,

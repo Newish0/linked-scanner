@@ -11,6 +11,8 @@ type AppSettings = {
     theme: string;
     lastUsedCameraId: string | null;
 
+    autoScan: boolean;
+
     showCameraCanvas: boolean;
 
     canvasFilter: {
@@ -34,6 +36,9 @@ const getInitialAppSettings = () => {
         linkedDevices: [],
         theme: "night",
         lastUsedCameraId: null,
+
+        autoScan: true,
+
         showCameraCanvas: false,
 
         canvasFilter: {

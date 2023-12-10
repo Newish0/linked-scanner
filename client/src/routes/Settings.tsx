@@ -5,7 +5,7 @@ import PageHeader from "@components/Page/Header";
 import PageSection from "@components/Page/Section";
 import SettingsOption from "@components/Page/SettingsOption";
 import ResponsiveModal from "@components/modals/ResponsiveModal";
-import { IconAbc, IconBug, IconRefreshAlert } from "@tabler/icons-react";
+import { IconAbc, IconBug, IconFocusAuto, IconRefreshAlert } from "@tabler/icons-react";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -28,6 +28,7 @@ function Settings() {
                 </SettingSection>
 
                 <SettingSection title="Scanning">
+                    <AutoScanOption />
                     <ContrastOption />
                     <BrightnessOption />
                 </SettingSection>
@@ -62,6 +63,29 @@ function SettingSection({ children, title }: { children: React.ReactNode; title:
 
             {children}
         </PageSection>
+    );
+}
+
+function AutoScanOption() {
+    const [appSettings, setAppSettings] = useAppSettings();
+
+    const handleAutoScanChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+        setAppSettings({ autoScan: evt.target.checked });
+    };
+
+    return (
+        <SettingsOption
+            title="Auto Scan"
+            icon={<IconFocusAuto />}
+            description="Scan code without having to hold screen."
+        >
+            <input
+                type="checkbox"
+                className="toggle toggle-primary"
+                checked={appSettings.autoScan}
+                onChange={handleAutoScanChange}
+            />
+        </SettingsOption>
     );
 }
 
