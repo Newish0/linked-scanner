@@ -5,7 +5,7 @@ import PageHeader from "@components/Page/Header";
 import PageSection from "@components/Page/Section";
 import SettingsOption from "@components/Page/SettingsOption";
 import ResponsiveModal from "@components/modals/ResponsiveModal";
-import { IconAbc, IconBug, IconFocusAuto, IconRefreshAlert } from "@tabler/icons-react";
+import { IconAbc, IconBrightness, IconBug, IconContrast, IconFocusAuto, IconRefreshAlert } from "@tabler/icons-react";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -113,7 +113,7 @@ function ContrastOption() {
     return (
         <SettingsOption
             title="Contrast"
-            icon={<IconAbc />}
+            icon={<IconContrast />}
             description="Adjusts camera feed filter."
         >
             <div
@@ -159,7 +159,7 @@ function BrightnessOption() {
     return (
         <SettingsOption
             title="Brightness"
-            icon={<IconAbc />}
+            icon={<IconBrightness />}
             description="Adjusts camera feed filter."
         >
             <div
