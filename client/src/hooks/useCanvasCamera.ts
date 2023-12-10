@@ -40,7 +40,6 @@ const useCanvasCamera = ({
                         width: { ideal: idealWidth },
                         height: { ideal: idealHeight },
                         aspectRatio: { exact: aspectRatio },
-                        facingMode: { ideal: "environment" },
                         frameRate: { ideal: idealFrameRate },
                     },
                 };
