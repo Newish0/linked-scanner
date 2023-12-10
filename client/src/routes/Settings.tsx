@@ -7,7 +7,6 @@ import SettingsOption from "@components/Page/SettingsOption";
 import ResponsiveModal from "@components/modals/ResponsiveModal";
 import { IconAbc, IconBug, IconRefreshAlert } from "@tabler/icons-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 function Settings() {
     const [appSettings, setAppSettings] = useAppSettings();
