@@ -1,15 +1,20 @@
 import { DeviceId, DeviceParts } from "@shared/type/device";
 import { toDeviceIdParts } from "@shared/utils/device";
 import { useRef, useState } from "react";
+import { ClassNameValue, twMerge } from "tailwind-merge";
 
 export default function IDInput({
     onComplete,
     deviceId,
-    disabled,
+    readOnly,
+    size,
+    className,
 }: {
     onComplete?: (id: DeviceId) => void;
     deviceId?: DeviceId;
-    disabled: boolean;
+    readOnly: boolean;
+    size: "lg" | "sm";
+    className?: ClassNameValue;
 }) {
     const [parts, setParts] = useState<DeviceParts>(
         (deviceId && toDeviceIdParts(deviceId)) || ["", "", "", ""]
@@ -48,17 +53,33 @@ export default function IDInput({
         else if (onComplete) onComplete(parts.join("-") as DeviceId);
     };
 
+    let sizeClass = "";
+    if (size === "sm") {
+        sizeClass = "max-h-[35px] text-sm";
+    }
+
+    const inputClassName = twMerge(
+        "input input-bordered w-full px-0 text-center max-w-[75px]",
+        sizeClass
+    );
+
     return (
-        <div className="flex items-center gap-1">
+        <div
+            className={twMerge(
+                "flex items-center",
+                size === "sm" ? "gap-[1px]" : "gap-1",
+                className
+            )}
+        >
             <input
                 type="text"
                 placeholder="XXXX"
-                className="input input-bordered max-w-[75px] text-center"
+                className={inputClassName}
                 maxLength={4}
                 ref={input1Ref}
                 value={parts[0]}
                 onChange={handleInput1Change}
-                disabled={disabled}
+                readOnly={readOnly}
             />
 
             <span>-</span>
@@ -66,41 +87,42 @@ export default function IDInput({
             <input
                 type="text"
                 placeholder="XXXX"
-                className="input input-bordered max-w-[75px] text-center"
+                className={inputClassName}
                 maxLength={4}
                 ref={input2Ref}
                 value={parts[1]}
                 onChange={handleInput2Change}
-                disabled={disabled}
+                readOnly={readOnly}
             />
 
             <span>-</span>
             <input
                 type="text"
                 placeholder="XXXX"
-                className="input input-bordered max-w-[75px] text-center"
+                className={inputClassName}
                 maxLength={4}
                 ref={input3Ref}
                 value={parts[2]}
                 onChange={handleInput3Change}
-                disabled={disabled}
+                readOnly={readOnly}
             />
             <span>-</span>
 
             <input
                 type="text"
                 placeholder="XXXX"
-                className="input input-bordered max-w-[75px] text-center"
+                className={inputClassName}
                 maxLength={4}
                 ref={input4Ref}
                 value={parts[3]}
                 onChange={handleInput4Change}
-                disabled={disabled}
+                readOnly={readOnly}
             />
         </div>
     );
 }
 
 IDInput.defaultProps = {
-    disabled: false,
+    readOnly: false,
+    size: "lg",
 };

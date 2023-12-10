@@ -5,6 +5,7 @@ import useCanvasCamera from "@hooks/useCanvasCamera";
 import { twMerge } from "tailwind-merge";
 
 import { createRoundedRectPath, roundedRect } from "@shared/utils/canvas";
+import { triggerHapticFeedback, HAPTIC_SUCCESS } from "@shared/utils/haptic";
 import {
     extractThemeColorsFromDOM,
     extractThemeUtilitiesFromDOM,
@@ -16,6 +17,7 @@ interface CodeScannerProps {
     onQRCodeScan: (result: Html5QrcodeResult) => void;
     showFilter: boolean;
     fps: number;
+    debug: boolean;
 }
 
 enum ScanStatus {
@@ -26,7 +28,13 @@ enum ScanStatus {
 
 const CAPTURE_AREA_RATIO = 0.5;
 
-export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }: CodeScannerProps) {
+export default function CodeScanner({
+    cameraId,
+    onQRCodeScan,
+    showFilter,
+    fps,
+    debug,
+}: CodeScannerProps) {
     const [containerId] = useState(crypto.randomUUID());
     const [screenAspectRatio, setScreenAspectRatio] = useState<number>(
         window.innerWidth / window.innerHeight
@@ -39,9 +47,6 @@ export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }:
         // idealHeight: 1920,
         aspectRatio: screenAspectRatio,
         beforeDraw(ctx, frameNumber) {
-            // Ensure source over mode before overlay creation
-            ctx.globalCompositeOperation = "source-over";
-
             let boxLen = Math.min(ctx.canvas.width, ctx.canvas.height) * CAPTURE_AREA_RATIO;
             let crossLen = boxLen * 0.5;
             const radius = remToPx(extractThemeUtilitiesFromDOM().roundedBox) ?? 0;
@@ -94,6 +99,10 @@ export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }:
 
             // Ensure camera stream draws below overlay
             ctx.globalCompositeOperation = "destination-atop";
+        },
+        afterDraw(ctx) {
+            // Revert composition mode
+            ctx.globalCompositeOperation = "source-over";
         },
     });
 
@@ -157,6 +166,7 @@ export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }:
                             new File([blob], "canvasSnapshot")
                         );
                         handleQRCodeScan(result);
+                        triggerHapticFeedback(HAPTIC_SUCCESS);
                     } catch (error) {
                         handleQRCodeFail();
                     }
@@ -175,6 +185,7 @@ export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }:
 
     const handleMouseDown = () => {
         setScanStatus(ScanStatus.Scanning);
+        triggerHapticFeedback(HAPTIC_SUCCESS);
     };
 
     const handleMouseUp = () => {
@@ -184,7 +195,7 @@ export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }:
     return (
         <div className="h-full">
             <div
-                className="relative h-full"
+                className="relative h-full touch-none"
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
                 onTouchStart={handleMouseDown}
@@ -196,15 +207,17 @@ export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }:
                     muted
                     playsInline
                     className={twMerge(
-                        "absolute w-full h-full object-cover",
-                        showFilter ? "invisible" : "visible"
+                        "absolute h-full w-full object-cover",
+                        debug && "relative h-1/2 object-contain",
+                        !debug && showFilter ? "invisible" : "visible"
                     )}
                 />
                 <canvas
                     ref={canvasRef}
                     className={twMerge(
-                        "absolute w-full h-full object-cover",
-                        showFilter ? "visible" : "invisible"
+                        "absolute h-full w-full object-cover",
+                        debug && "relative h-1/2 object-contain",
+                        debug || showFilter ? "visible" : "invisible"
                     )}
                 />
             </div>
@@ -218,4 +231,5 @@ export default function CodeScanner({ cameraId, onQRCodeScan, showFilter, fps }:
 CodeScanner.defaultProps = {
     showFilter: false,
     fps: 10,
+    debug: false,
 };

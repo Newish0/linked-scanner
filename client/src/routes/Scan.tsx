@@ -49,7 +49,7 @@ export default function Scan() {
                 if (parsedUrlScheme.id && isDeviceId(parsedUrlScheme.id)) {
                     console.log("BEFORE NAVIGATE", parsedUrlScheme);
                     navigate({
-                        pathname: `/connection/new`,
+                        pathname: `/connections/new`,
                         search: createSearchParams({
                             deviceId: parsedUrlScheme.id ?? "",
                             name: parsedUrlScheme.name ?? "",
@@ -89,6 +89,7 @@ export default function Scan() {
                         cameraId={camera.id}
                         showFilter={true}
                         onQRCodeScan={handleQRCodeScan}
+                        debug={appSettings.showCameraCanvas}
                     />
                 )}
 

@@ -10,6 +10,8 @@ type AppSettings = {
     linkedDevices: LinkedDevice[];
     theme: string;
     lastUsedCameraId: string | null;
+
+    showCameraCanvas: boolean;
 };
 
 const STORAGE_KEY = `${pkg.name}-app-settings`;
@@ -27,6 +29,7 @@ const getInitialAppSettings = () => {
         linkedDevices: [],
         theme: "night",
         lastUsedCameraId: null,
+        showCameraCanvas: false,
     };
 
     const settings: AppSettings = settingsJSON ? JSON.parse(settingsJSON) : defaultSettings;

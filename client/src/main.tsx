@@ -29,7 +29,7 @@ const router = createHashRouter([
                 element: <Settings />,
             },
             {
-                path: "connection/new",
+                path: "connections/new",
                 element: <NewConnection />,
             },
         ],
