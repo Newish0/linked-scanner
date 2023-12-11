@@ -92,6 +92,8 @@ export default function Scan() {
                         debug={appSettings.showCameraCanvas}
                         contrastOffset={appSettings.canvasFilter.contrastOffset}
                         brightnessOffset={appSettings.canvasFilter.brightnessOffset}
+                        autoScan={appSettings.autoScan}
+                        captureAreaRatio={appSettings.scanArea}
                     />
                 )}
 

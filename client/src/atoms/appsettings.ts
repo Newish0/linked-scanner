@@ -12,6 +12,7 @@ type AppSettings = {
     lastUsedCameraId: string | null;
 
     autoScan: boolean;
+    scanArea: number;
 
     showCameraCanvas: boolean;
 
@@ -38,6 +39,7 @@ const getInitialAppSettings = () => {
         lastUsedCameraId: null,
 
         autoScan: true,
+        scanArea: 0.5,
 
         showCameraCanvas: false,
 

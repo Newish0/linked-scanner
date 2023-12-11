@@ -36,6 +36,7 @@ function Settings() {
 
                 <SettingSection title="Scanning">
                     <AutoScanOption />
+                    <ScanAreaOption />
                     <ContrastOption />
                     <BrightnessOption />
                 </SettingSection>
@@ -91,6 +92,32 @@ function AutoScanOption() {
                 className="toggle toggle-primary"
                 checked={appSettings.autoScan}
                 onChange={handleAutoScanChange}
+            />
+        </SettingsOption>
+    );
+}
+
+function ScanAreaOption() {
+    const [appSettings, setAppSettings] = useAppSettings();
+
+    const handleScanAreaChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+        setAppSettings({
+            scanArea: evt.target.valueAsNumber,
+        });
+    };
+
+    return (
+        <SettingsOption
+            title="Scan Area"
+            icon={<IconContrast />}
+            description="The ratio of the screen to scan code."
+        >
+            <RangeSlider
+                min={0.1}
+                max={1}
+                step={0.05}
+                value={appSettings.scanArea}
+                onChange={handleScanAreaChange}
             />
         </SettingsOption>
     );

@@ -18,6 +18,7 @@ interface CodeScannerProps {
     showFilter: boolean;
     fps: number;
     autoScan: boolean;
+    captureAreaRatio: number; 
     contrastOffset: number;
     brightnessOffset: number;
     debug: boolean;
@@ -29,7 +30,7 @@ enum ScanStatus {
     Fail,
 }
 
-const CAPTURE_AREA_RATIO = 0.5;
+
 
 export default function CodeScanner({
     cameraId,
@@ -37,6 +38,7 @@ export default function CodeScanner({
     showFilter,
     fps,
     autoScan,
+    captureAreaRatio,
     debug,
     contrastOffset,
     brightnessOffset,
@@ -75,7 +77,7 @@ export default function CodeScanner({
             layer.width = ctx.canvas.width;
             layer.height = ctx.canvas.height;
 
-            let boxLen = Math.min(ctx.canvas.width, ctx.canvas.height) * CAPTURE_AREA_RATIO;
+            let boxLen = Math.min(ctx.canvas.width, ctx.canvas.height) * captureAreaRatio;
             let crossLen = boxLen * 0.5;
             const radius = remToPx(extractThemeUtilitiesFromDOM().roundedBox) ?? 0;
 
@@ -177,7 +179,7 @@ export default function CodeScanner({
                 const ctx = canvas.getContext("2d");
                 if (!ctx) return;
 
-                const captureLen = Math.min(canvas.width, canvas.height) * CAPTURE_AREA_RATIO;
+                const captureLen = Math.min(canvas.width, canvas.height) * captureAreaRatio;
                 const imageData = ctx.getImageData(
                     (canvas.width - captureLen) / 2,
                     (canvas.height - captureLen) / 2,
@@ -216,7 +218,7 @@ export default function CodeScanner({
         return () => {
             clearInterval(scanInterval);
         };
-    }, [canvasRef, containerId, fps, onQRCodeScan, scanStatus]);
+    }, [autoScan, canvasRef, captureAreaRatio, containerId, fps, onQRCodeScan, scanStatus]);
 
     const handleMouseDown = () => {
         setScanStatus(ScanStatus.Scanning);
@@ -271,6 +273,7 @@ CodeScanner.defaultProps = {
     showFilter: false,
     fps: 10,
     autoScan: true,
+    captureAreaRatio: 0.5,
     debug: false,
     contrastOffset: 0,
     brightnessOffset: 0,
