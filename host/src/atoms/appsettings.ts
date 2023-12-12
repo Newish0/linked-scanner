@@ -3,15 +3,19 @@ import { randomDeviceId } from "@shared/utils/device";
 import { generateAdjNounPair } from "@shared/utils/wordGenerator";
 import { atom, useAtom } from "jotai";
 
+import pkg from "@shared/../package.json";
+
 type AppSettings = {
     thisDevice: Device;
     linkedDevices: LinkedDevice[];
     theme: string;
 };
 
+const STORAGE_KEY = `${pkg.name}-app-settings`;
+
 const getInitialAppSettings = () => {
     // Retrieve app settings from local storage or use default values
-    const settingsJSON = localStorage.getItem("appSettings");
+    const settingsJSON = localStorage.getItem(STORAGE_KEY);
 
     const defaultSettings: AppSettings = {
         thisDevice: {
@@ -23,9 +27,12 @@ const getInitialAppSettings = () => {
         theme: "night",
     };
 
-    const settings: AppSettings = settingsJSON ? JSON.parse(settingsJSON) : defaultSettings;
-
-    return settings;
+    if (settingsJSON) {
+        return JSON.parse(settingsJSON) as AppSettings;
+    } else {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultSettings));
+        return defaultSettings;
+    }
 };
 
 /**
@@ -39,8 +46,13 @@ export const useAppSettings = () => {
     // Custom setter function that updates both atom and localStorage
     const setAppSettingsWithLocalStorage = (newSettings: AppSettings) => {
         setAppSettings(newSettings);
-        localStorage.setItem("appSettings", JSON.stringify(newSettings));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));
     };
 
-    return [appSettings, setAppSettingsWithLocalStorage] as const;
+    const resetAppSettings = () => {
+        localStorage.removeItem(STORAGE_KEY);
+        setAppSettings(getInitialAppSettings());
+    };
+
+    return [appSettings, setAppSettingsWithLocalStorage, resetAppSettings] as const;
 };

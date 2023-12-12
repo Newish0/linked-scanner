@@ -49,9 +49,12 @@ const getInitialAppSettings = () => {
         },
     };
 
-    const settings: AppSettings = settingsJSON ? JSON.parse(settingsJSON) : defaultSettings;
-
-    return settings;
+    if (settingsJSON) {
+        return JSON.parse(settingsJSON) as AppSettings;
+    } else {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultSettings));
+        return defaultSettings;
+    }
 };
 
 /**
