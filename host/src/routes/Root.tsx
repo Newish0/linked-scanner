@@ -9,12 +9,16 @@ import { twMerge } from "tailwind-merge";
 import { debounce } from "lodash";
 
 import { invoke } from "@tauri-apps/api/tauri";
+import { useAppSettings } from "@atoms/appsettings";
+
+import { deviceIdToPeerId } from "@shared/utils/convert";
 
 export default function Root() {
     const navigate = useNavigate();
+    const [appSettings] = useAppSettings();
 
     // Init connection
-    const { localPeer } = useGlobalPeer({
+    const { localPeer } = useGlobalPeer(deviceIdToPeerId(appSettings.thisDevice.id), {
         verbose: true,
         handleData: debounce((data: unknown) => {
             console.log("DATA HANDLED", data);

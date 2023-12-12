@@ -6,7 +6,6 @@ import { useGlobalPeer } from "@hooks/useGlobalPeer";
 import { deviceIdToPeerId } from "@shared/utils/convert";
 import { useEffect, useState } from "react";
 
-
 interface DeviceCardProps
     extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     savedDevice: LinkedDevice;
@@ -14,7 +13,10 @@ interface DeviceCardProps
 
 export default function DeviceCard({ savedDevice, ...props }: DeviceCardProps) {
     const [appSettings] = useAppSettings();
-    const { connect, close, connections } = useGlobalPeer({ verbose: true });
+    const { connect, close, connections } = useGlobalPeer(
+        deviceIdToPeerId(appSettings.thisDevice.id),
+        { verbose: true }
+    );
 
     const [connecting, setConnecting] = useState(false);
     const [connected, setConnected] = useState<boolean>(false);

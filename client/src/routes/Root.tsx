@@ -5,12 +5,17 @@ import { useGlobalPeer } from "@hooks/useGlobalPeer";
 
 import PrepConnectionLoader from "@components/loaders/PrepConnection";
 import { useEffect } from "react";
+import { deviceIdToPeerId } from "@shared/utils/convert";
+import { useAppSettings } from "@atoms/appsettings";
 
 export default function Root() {
     const navigate = useNavigate();
+    const [appSettings] = useAppSettings();
 
     // Init connection
-    const { localPeer } = useGlobalPeer({ verbose: true });
+    const { localPeer } = useGlobalPeer(deviceIdToPeerId(appSettings.thisDevice.id), {
+        verbose: true,
+    });
 
     useEffect(() => {
         if (localPeer) navigate("/home");

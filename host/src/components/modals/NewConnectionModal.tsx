@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import ResponsiveModal from "./ResponsiveModal";
 import QRCode from "qrcode";
 import { useAppSettings } from "@atoms/appsettings";
-import { useGlobalPeer } from "@hooks/useGlobalPeer";
+
 
 export default function NewConnectionModal({
     isOpen,

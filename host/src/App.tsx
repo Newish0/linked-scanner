@@ -1,6 +1,7 @@
+import { useAppSettings } from "@atoms/appsettings";
 import { useGlobalPeer } from "@hooks/useGlobalPeer";
 import { PeerId } from "@shared/type/general";
-import { invoke } from "@tauri-apps/api/tauri";
+import { deviceIdToPeerId } from "@shared/utils/convert";
 import { useState } from "react";
 
 interface PeerData {
@@ -10,7 +11,8 @@ interface PeerData {
 
 function App() {
     const [msgs, setMsgs] = useState<PeerData[]>([]);
-    const { connect } = useGlobalPeer({
+    const [appSettings] = useAppSettings();
+    const { connect } = useGlobalPeer(deviceIdToPeerId(appSettings.thisDevice.id), {
         handleData: (data) => {
             setMsgs([...msgs, data as PeerData]);
             console.log(data);
@@ -24,13 +26,20 @@ function App() {
         <>
             <div className="text-2xl italic">Hello world</div>
 
-            <input className="w-full" type="text" value={id} onChange={(evt) => setId(evt.target.value)} />
+            <input
+                className="w-full"
+                type="text"
+                value={id}
+                onChange={(evt) => setId(evt.target.value)}
+            />
 
             <button
                 onClick={() => {
                     connect(id as PeerId);
                 }}
-            >CONNECT </button>
+            >
+                CONNECT{" "}
+            </button>
 
             {msgs.map(({ payload }, i) => (
                 <p key={i}>{payload}</p>

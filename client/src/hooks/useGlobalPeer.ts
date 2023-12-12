@@ -1,8 +1,6 @@
-import { useAppSettings } from "@atoms/appsettings";
 import { connectionsAtom, localPeerAtom } from "@atoms/peer";
 import { PeerId } from "@shared/type/general";
 import { ConnectionMetadata } from "@shared/type/peer";
-import { deviceIdToPeerId } from "@shared/utils/convert";
 import { useAtom } from "jotai";
 import { DataConnection, Peer, PeerConnectOption } from "peerjs";
 import { useEffect } from "react";
@@ -25,15 +23,17 @@ const connPromiseMap = new Map<string, Promise<DataConnection>>();
 
 const dataHandlers: DataHandler[] = [];
 
-export function useGlobalPeer({
-    handleData = undefined,
-    handleConnection = undefined,
-    verbose = false,
-    timeout: timeoutDuration = 10000,
-}: GlobalPeerOptions = {}) {
+export function useGlobalPeer(
+    id: string,
+    {
+        handleData = undefined,
+        handleConnection = undefined,
+        verbose = false,
+        timeout: timeoutDuration = 10000,
+    }: GlobalPeerOptions = {}
+) {
     const [localPeer, setLocalPeer] = useAtom(localPeerAtom);
     const [connections, setConnections] = useAtom(connectionsAtom);
-    const [appSettings] = useAppSettings();
 
     if (verbose) {
         console.log(
@@ -61,7 +61,7 @@ export function useGlobalPeer({
     useEffect(() => {
         if (verbose) console.log(`[GlobalPeer] Refresh connection.`);
 
-        const newPeer = new Peer(deviceIdToPeerId(appSettings.thisDevice.id));
+        const newPeer = new Peer(id);
 
         // Event handler for when a connection is established
         newPeer.once("open", (id) => {
@@ -104,7 +104,7 @@ export function useGlobalPeer({
         return () => {
             newPeer.disconnect();
         };
-    }, [appSettings.thisDevice.id, handleConnection, setConnections, setLocalPeer, verbose]);
+    }, [handleConnection, id, setConnections, setLocalPeer, verbose]);
 
     // Function to send a message
     const sendMessage = (data: unknown, chunked?: boolean) => {

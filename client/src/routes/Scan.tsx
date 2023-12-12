@@ -8,7 +8,7 @@ import { useCameraList } from "@hooks/html5qrcode";
 import { useGlobalPeer } from "@hooks/useGlobalPeer";
 
 import { ScanMode } from "@type/scan";
-import { parseURLScheme } from "@shared/utils/convert";
+import { deviceIdToPeerId, parseURLScheme } from "@shared/utils/convert";
 import { isDeviceId } from "@shared/utils/device";
 import { CameraDevice, Html5QrcodeResult } from "html5-qrcode";
 
@@ -21,7 +21,9 @@ export default function Scan() {
     const { cameras, hasError: hasCamPermissionError } = useCameraList();
     const [camera, setCamera] = useState<CameraDevice>();
     const navigate = useNavigate();
-    const { sendMessage } = useGlobalPeer({ verbose: true });
+    const { sendMessage } = useGlobalPeer(deviceIdToPeerId(appSettings.thisDevice.id), {
+        verbose: true,
+    });
 
     // Set last used camera if saved
     useEffect(() => {

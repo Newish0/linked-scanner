@@ -6,11 +6,12 @@ import { IconPlus } from "@tabler/icons-react";
 import NewConnectionModal from "@components/modals/NewConnectionModal";
 import { useEffect, useState } from "react";
 import { useGlobalPeer } from "@hooks/useGlobalPeer";
+import { deviceIdToPeerId } from "@shared/utils/convert";
 
 export default function Home() {
     const [appSettings] = useAppSettings();
 
-    const { connections } = useGlobalPeer();
+    const { connections } = useGlobalPeer(deviceIdToPeerId(appSettings.thisDevice.id));
 
     const [showNewConnModal, setShowNewConnModal] = useState(false);
 
@@ -50,7 +51,7 @@ export default function Home() {
 function YourDevices() {
     const [appSettings] = useAppSettings();
 
-    const { connections } = useGlobalPeer();
+    const { connections } = useGlobalPeer(deviceIdToPeerId(appSettings.thisDevice.id));
 
     return (
         <>
