@@ -22,6 +22,7 @@ type ConnectionOptions = PeerConnectOption & {
 const connPromiseMap = new Map<string, Promise<DataConnection>>();
 
 const dataHandlers: DataHandler[] = [];
+const connectionHandlers: ConnectionHandler[] = [];
 
 export function useGlobalPeer(
     id: string,
@@ -59,6 +60,21 @@ export function useGlobalPeer(
     }, [handleData]);
 
     useEffect(() => {
+        const copiedHandler = handleConnection;
+
+        if (copiedHandler) connectionHandlers.push(handleConnection);
+
+        return () => {
+            if (copiedHandler) {
+                connectionHandlers.splice(
+                    connectionHandlers.findIndex((handler) => handler === copiedHandler),
+                    1
+                );
+            }
+        };
+    }, [handleConnection]);
+
+    useEffect(() => {
         if (verbose) console.log(`[GlobalPeer] Refresh connection.`);
 
         const newPeer = new Peer(id);
@@ -76,7 +92,7 @@ export function useGlobalPeer(
 
             setConnections((prevConnections) => [...prevConnections, connection]);
 
-            if (handleConnection) handleConnection(connection);
+            for (const connHandler of connectionHandlers) connHandler(connection);
 
             // Event handler for when data is received
             connection.on("data", (data) => {
@@ -104,7 +120,7 @@ export function useGlobalPeer(
         return () => {
             newPeer.disconnect();
         };
-    }, [handleConnection, id, setConnections, setLocalPeer, verbose]);
+    }, [id, setConnections, setLocalPeer, verbose]);
 
     // Function to send a message
     const sendMessage = (data: unknown, chunked?: boolean) => {
