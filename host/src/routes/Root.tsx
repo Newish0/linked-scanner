@@ -1,16 +1,12 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-
 import { useGlobalPeer } from "@hooks/useGlobalPeer";
-
 import PrepConnectionLoader from "@components/loaders/PrepConnection";
 import { useEffect } from "react";
 import { IconHistory, IconHome, IconSettings } from "@tabler/icons-react";
 import { twMerge } from "tailwind-merge";
 import { debounce } from "lodash";
-
 import { invoke } from "@tauri-apps/api/tauri";
 import { useAppSettings } from "@atoms/appsettings";
-
 import { deviceIdToPeerId } from "@shared/utils/convert";
 
 export default function Root() {
