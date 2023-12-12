@@ -15,6 +15,9 @@ export default function Root() {
     // Init connection
     const { localPeer } = useGlobalPeer(deviceIdToPeerId(appSettings.thisDevice.id), {
         verbose: true,
+        handleConnection: () => {
+            alert();
+        },
     });
 
     useEffect(() => {

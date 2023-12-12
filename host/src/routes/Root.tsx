@@ -16,6 +16,9 @@ export default function Root() {
     // Init connection
     const { localPeer } = useGlobalPeer(deviceIdToPeerId(appSettings.thisDevice.id), {
         verbose: true,
+        handleConnection: () => {
+            console.log("NEW CONN")
+        },
         handleData: debounce((data: unknown) => {
             console.log("DATA HANDLED", data);
             invoke("fire_key_sequence", { keySequence: (data as { payload?: string })?.payload });

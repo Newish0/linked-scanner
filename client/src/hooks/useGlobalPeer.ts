@@ -1,6 +1,6 @@
 import { connectionsAtom, localPeerAtom } from "@atoms/peer";
 import { PeerId } from "@shared/type/general";
-import { ConnectionMetadata } from "@shared/type/peer";
+
 import { useAtom } from "jotai";
 import { DataConnection, Peer, PeerConnectOption } from "peerjs";
 import { useEffect } from "react";
@@ -13,10 +13,6 @@ type GlobalPeerOptions = {
     handleConnection?: ConnectionHandler;
     verbose?: boolean;
     timeout?: number;
-};
-
-type ConnectionOptions = PeerConnectOption & {
-    metadata?: ConnectionMetadata;
 };
 
 const connPromiseMap = new Map<string, Promise<DataConnection>>();
@@ -134,7 +130,7 @@ export function useGlobalPeer(
 
     // Function to establish new connection
     // TODO: move to using full device obj as param scanned from QR code
-    const connect = async (peerId: PeerId, options?: ConnectionOptions) => {
+    const connect = async (peerId: PeerId, options?: PeerConnectOption) => {
         if (verbose) console.log(`[GlobalPeer] Attempting to connect to ${peerId}`);
 
         if (!localPeer)
