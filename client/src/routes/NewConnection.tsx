@@ -14,7 +14,9 @@ import { useSearchParams } from "react-router-dom";
 export default function NewConnection() {
     const [appSettings, setAppSettings] = useAppSettings();
     const [searchParams] = useSearchParams();
-    const { connect, localPeer } = useGlobalPeer({ verbose: true });
+    const { connect, localPeer } = useGlobalPeer(deviceIdToPeerId(appSettings.thisDevice.id), {
+        verbose: true,
+    });
 
     const [hasDeviceIdErr, setHasDeviceIdErr] = useState(false);
     const [connErr, setConnErr] = useState<string>();
