@@ -64,16 +64,26 @@ function SideNav() {
                 </NavLink>
             </li>
             <li>
-                <a>
+                <NavLink
+                    className={({ isActive, isPending }) =>
+                        twMerge(isActive ? "active" : isPending ? "pending" : "")
+                    }
+                    to="/history"
+                >
                     <IconHistory></IconHistory>
                     <span className="hidden sm:block">Scan History</span>
-                </a>
+                </NavLink>
             </li>
             <li>
-                <a>
+                <NavLink
+                    className={({ isActive, isPending }) =>
+                        twMerge(isActive ? "active" : isPending ? "pending" : "")
+                    }
+                    to="/settings"
+                >
                     <IconSettings></IconSettings>
                     <span className="hidden sm:block">Setting</span>
-                </a>
+                </NavLink>
             </li>
         </ul>
     );

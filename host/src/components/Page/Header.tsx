@@ -3,7 +3,7 @@ export default function Header({
     rightAction,
 }: {
     title: string;
-    rightAction: React.ReactElement<HTMLButtonElement>;
+    rightAction?: React.ReactElement<HTMLButtonElement>;
 }) {
     return (
         <div className="flex justify-between m-5">

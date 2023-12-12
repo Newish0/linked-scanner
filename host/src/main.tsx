@@ -7,6 +7,7 @@ import { RouterProvider, createHashRouter } from "react-router-dom";
 import ErrorPage from "@routes/ErrorPage";
 import Settings from "@routes/Settings";
 import Home from "@routes/Home";
+import ScanHistory from "@routes/ScanHistory";
 
 const router = createHashRouter([
     {
@@ -17,6 +18,11 @@ const router = createHashRouter([
             {
                 path: "home/",
                 element: <Home />,
+            },
+
+            {
+                path: "history/",
+                element: <ScanHistory />,
             },
 
             {
