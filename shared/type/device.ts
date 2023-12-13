@@ -16,4 +16,5 @@ export type LinkedDevice = Device & {
 
     /** Number of times the connection to device was established  */
     numConnected: number;
+    secret: string;
 };

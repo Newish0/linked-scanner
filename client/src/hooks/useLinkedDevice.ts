@@ -7,22 +7,19 @@ import * as jose from "jose";
 import { PeerId } from "@shared/type/general";
 import { connectedDevicesAtom } from "@atoms/peer";
 import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
+
+import TimeBasedSecret from "@shared/utils/TimeBasedSecret";
 
 enum DeviceType {
     Host,
     Client,
 }
 
-type Options = {
-    secret?: string;
-};
-
-export default function useLinkedDevice(
-    thisDeviceType: DeviceType,
-    { secret: curSecret }: Options = {}
-) {
+export default function useLinkedDevice(thisDeviceType: DeviceType) {
     const [appSettings] = useAppSettings();
     const [connectedDevices, setConnectedDevices] = useAtom(connectedDevicesAtom);
+    const [secret, setSecret] = useState<Uint8Array>(TimeBasedSecret.value);
 
     const {
         close: closeConn,
@@ -37,33 +34,67 @@ export default function useLinkedDevice(
                     `Closed unexpected connection from ${newConn.peer}. Invalid peer id. `
                 );
                 closeConn(newConn);
+
+                return;
             }
 
             let existingDevice = appSettings.linkedDevices.find(({ id }) => id === deviceId);
 
+            // Assume new device is connecting with JWT encoded using this devices current secret.
             if (!existingDevice) {
-                // TODO: Handle new device
-
-                if (!curSecret) {
-                    console.warn("No current secret provided. Disconnecting.");
+                if (!secret) {
+                    console.warn("No current secret. Disconnecting.");
                     closeConn(newConn);
                     return;
                 }
 
                 try {
-                    const decodedMetadata = await jose.jwtVerify(
+                    const decodedMetadata: ConnectionMetadata = (await jose.jwtVerify(
                         newConn.metadata,
-                        new TextEncoder().encode(curSecret)
+                        secret,
+                        {
+                            issuer: appSettings.thisDevice.id,
+                            audience: deviceId,
+                        }
+                    )) as unknown as ConnectionMetadata;
+
+                    // Success: is valid new connection
+
+                    if (thisDeviceType === DeviceType.Client) {
+                        existingDevice = {
+                            ...decodedMetadata.host,
+                            lastConnected: new Date(),
+                            numConnected: 1,
+                            secret: new TextDecoder().decode(secret),
+                            createdAt: new Date(),
+                        };
+                    } else if (thisDeviceType === DeviceType.Host) {
+                        existingDevice = {
+                            ...decodedMetadata.client,
+                            lastConnected: new Date(),
+                            numConnected: 1,
+                            secret: new TextDecoder().decode(secret),
+                            createdAt: new Date(),
+                        };
+                    } else {
+                        console.warn("Invalid device type. Disconnecting.");
+                        closeConn(newConn);
+                        return;
+                    }
+                } catch (error) {
+                    console.warn(
+                        "Failed to decode JWT metadata with current secret. Disconnecting."
                     );
-                    //TODO
-                } catch (error) {}
+                    closeConn(newConn);
+                    return;
+                }
             }
 
             // Verify device is still the same as last
             try {
                 const decodedMetadata = await jose.jwtVerify(
                     newConn.metadata,
-                    existingDevice.secret,
+                    new TextEncoder().encode(existingDevice.secret),
                     {
                         issuer: existingDevice.id,
                         audience: appSettings.thisDevice.id,
@@ -83,6 +114,18 @@ export default function useLinkedDevice(
             }
         },
     });
+
+    // Hook react state into time based secret
+    useEffect(() => {
+        const secretUpdateHandler = (newValue: Uint8Array) => {
+            setSecret(newValue);
+        };
+
+        TimeBasedSecret.onUpdate(secretUpdateHandler);
+        return () => {
+            TimeBasedSecret.offUpdate(secretUpdateHandler);
+        };
+    }, []);
 
     const closeLink = (linkedDevice: LinkedDevice) => {
         const connIndex = connectedDevices.findIndex(({ id }) => id === linkedDevice.id);
@@ -135,5 +178,6 @@ export default function useLinkedDevice(
         ready: localPeer !== null,
         sendMessage,
         connectedDevices,
+        secret,
     } as const;
 }
