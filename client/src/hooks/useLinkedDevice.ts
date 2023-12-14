@@ -51,11 +51,7 @@ export default function useLinkedDevice(thisDeviceType: DeviceType) {
                 try {
                     const decodedMetadata: ConnectionMetadata = (await jose.jwtVerify(
                         newConn.metadata,
-                        secret,
-                        {
-                            issuer: appSettings.thisDevice.id,
-                            audience: deviceId,
-                        }
+                        secret
                     )) as unknown as ConnectionMetadata;
 
                     // Success: is valid new connection
@@ -94,11 +90,7 @@ export default function useLinkedDevice(thisDeviceType: DeviceType) {
             try {
                 const decodedMetadata = await jose.jwtVerify(
                     newConn.metadata,
-                    new TextEncoder().encode(existingDevice.secret),
-                    {
-                        issuer: existingDevice.id,
-                        audience: appSettings.thisDevice.id,
-                    }
+                    new TextEncoder().encode(existingDevice.secret)
                 );
                 console.log(decodedMetadata);
 
