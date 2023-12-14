@@ -8,6 +8,14 @@ export default class TimeBasedSecret {
 
     private static updateHandlers: UpdateHandler[] = [];
 
+    private static _bgRefresh = false;
+
+    private static bgRefreshTimeout: ReturnType<typeof setTimeout>;
+
+    static init() {
+        TimeBasedSecret.refresh();
+    }
+
     static get value() {
         const now = Date.now();
 
@@ -26,6 +34,13 @@ export default class TimeBasedSecret {
         TimeBasedSecret.lastGenTime = Date.now();
 
         for (const handler of TimeBasedSecret.updateHandlers) handler(TimeBasedSecret.value);
+
+        if (TimeBasedSecret.bgRefresh) {
+            TimeBasedSecret.bgRefreshTimeout = setTimeout(
+                TimeBasedSecret.refresh,
+                TimeBasedSecret.refreshInterval
+            );
+        }
     }
 
     static onUpdate(handler: UpdateHandler) {
@@ -36,5 +51,15 @@ export default class TimeBasedSecret {
     static offUpdate(handler: UpdateHandler) {
         const index = TimeBasedSecret.updateHandlers.findIndex((h) => h === handler);
         if (index > -1) TimeBasedSecret.updateHandlers.splice(index, 1);
+    }
+
+    static get bgRefresh() {
+        return TimeBasedSecret._bgRefresh;
+    }
+
+    static set bgRefresh(value: boolean) {
+        clearTimeout(TimeBasedSecret.bgRefreshTimeout);
+        TimeBasedSecret._bgRefresh = value;
+        TimeBasedSecret.refresh();
     }
 }
