@@ -7,9 +7,11 @@ use enigo::*;
 fn fire_key_sequence(key_sequence: &str) {
     let mut enigo = Enigo::new();
 
-    format!("Firing key sequence {}", key_sequence);
+    format!("Firing keys {}", key_sequence);
 
-    enigo.key_sequence(key_sequence);
+    for c in key_sequence.chars() {
+        enigo.key_click(enigo::keycodes::Key::Layout(c));
+    }
 
     enigo.key_down(enigo::keycodes::Key::Return)
 }
