@@ -8,6 +8,8 @@ import { debounce } from "lodash";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useAppSettings } from "@atoms/appsettings";
 import { deviceIdToPeerId } from "@shared/utils/convert";
+import { DataConnection } from "peerjs";
+import { db } from "@db/primary";
 
 export default function Root() {
     const navigate = useNavigate();
@@ -16,9 +18,17 @@ export default function Root() {
     // Init connection
     const { localPeer } = useGlobalPeer(deviceIdToPeerId(appSettings.thisDevice.id), {
         verbose: true,
-        handleData: debounce((data: unknown) => {
+        handleData: debounce((data: unknown, connection: DataConnection) => {
             console.log("DATA HANDLED", data);
-            invoke("fire_key_sequence", { keySequence: (data as { payload?: string })?.payload });
+
+            const keySequence = (data as { payload?: string })?.payload;
+            invoke("fire_key_sequence", { keySequence });
+
+            db.scanHistories.add({
+                deviceId: connection.metadata.client.id,
+                scanContent: keySequence,
+                createdAt: new Date(),
+            });
         }, 300),
     });
 

@@ -16,6 +16,7 @@ export default defineConfig(async () => ({
             { find: "@components", replacement: path.resolve(__dirname, "src/components") },
             { find: "@routes", replacement: path.resolve(__dirname, "src/routes") },
             { find: "@atoms", replacement: path.resolve(__dirname, "src/atoms") },
+            { find: "@db", replacement: path.resolve(__dirname, "src/db") },
             { find: "@shared", replacement: path.resolve(__dirname, "../shared") },
             {
                 find: "tailwind-config",
