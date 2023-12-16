@@ -176,6 +176,27 @@ export function useGlobalPeer(
                 connPromiseMap.delete(peerId);
             });
 
+            // Event handler for when data is received
+            newConnection.on("data", (data) => {
+                if (verbose)
+                    console.log(
+                        `[GlobalPeer] Received: \`\n${
+                            typeof data === "object" ? JSON.stringify(data, null, 2) : data
+                        }\`\nfrom ${newConnection.peer}`
+                    );
+
+                for (const dataHandler of dataHandlers) dataHandler(data, newConnection);
+            });
+
+            newConnection.on("close", () => {
+                if (verbose) console.log(`[GlobalPeer] Connection ${newConnection.peer} closed.`);
+
+                // Remove the closed connection from the list
+                setConnections((prevConnections) =>
+                    prevConnections.filter((c) => c !== newConnection)
+                );
+            });
+
             newConnection.once("error", (err) => {
                 reject(err);
                 connPromiseMap.delete(peerId);
