@@ -1,20 +1,12 @@
 import { useEffect, useRef } from "react";
 
-type ModalWithFooter = {
-    footer: React.ReactNode; // Replace this with the actual type of your footer
-    onClose?: never;
-};
-
-type ModalWithOnClose = {
-    onClose?: () => void;
-    footer?: never;
-};
-
 type ResponsiveModalProps = {
     isOpen: boolean;
     title?: string;
     children?: React.ReactNode;
-} & (ModalWithFooter | ModalWithOnClose);
+    footer?: React.ReactNode;
+    onClose?: () => void;
+};
 
 export default function ResponsiveModal({
     isOpen,
