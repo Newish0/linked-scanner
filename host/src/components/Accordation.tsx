@@ -2,13 +2,19 @@ import { twMerge } from "tailwind-merge";
 
 interface AccordionProps
     extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-    title: string;
+    displayTitle: React.ReactNode;
     name: string;
     subtitle?: string;
     children?: React.ReactNode;
 }
 
-export default function Accordion({ title, subtitle, name, children, ...props }: AccordionProps) {
+export default function Accordion({
+    displayTitle,
+    subtitle,
+    name,
+    children,
+    ...props
+}: AccordionProps) {
     return (
         <div
             {...props}
@@ -16,7 +22,7 @@ export default function Accordion({ title, subtitle, name, children, ...props }:
         >
             <input type="radio" name={name} />
             <div className="collapse-title ">
-                <div className="text-xl font-medium">{title}</div>
+                <div className="text-xl font-medium">{displayTitle}</div>
                 {subtitle && <div className="text-base font-normal">{subtitle}</div>}
             </div>
             <div className="collapse-content">{children}</div>

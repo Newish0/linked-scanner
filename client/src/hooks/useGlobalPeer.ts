@@ -11,6 +11,7 @@ type ConnectionHandler = (connection: DataConnection) => void;
 type GlobalPeerOptions = {
     handleData?: DataHandler;
     handleConnection?: ConnectionHandler;
+    handleDisconnection?: ConnectionHandler;
     verbose?: boolean;
     timeout?: number;
 };
@@ -23,12 +24,14 @@ const connPromiseMap = new Map<string, Promise<DataConnection>>();
 
 const dataHandlers: DataHandler[] = [];
 const connectionHandlers: ConnectionHandler[] = [];
+const disconnectionHandlers: ConnectionHandler[] = [];
 
 export function useGlobalPeer(
     id: string,
     {
         handleData = undefined,
         handleConnection = undefined,
+        handleDisconnection = undefined,
         verbose = false,
         timeout: timeoutDuration = 10000,
     }: GlobalPeerOptions = {}
@@ -75,6 +78,21 @@ export function useGlobalPeer(
     }, [handleConnection]);
 
     useEffect(() => {
+        const copiedHandler = handleDisconnection;
+
+        if (copiedHandler) disconnectionHandlers.push(handleDisconnection);
+
+        return () => {
+            if (copiedHandler) {
+                disconnectionHandlers.splice(
+                    disconnectionHandlers.findIndex((handler) => handler === copiedHandler),
+                    1
+                );
+            }
+        };
+    }, [handleDisconnection]);
+
+    useEffect(() => {
         if (verbose) console.log(`[GlobalPeer] Refresh connection.`);
 
         const newPeer = new Peer(id);
@@ -113,6 +131,8 @@ export function useGlobalPeer(
                 setConnections((prevConnections) =>
                     prevConnections.filter((c) => c !== connection)
                 );
+
+                for (const connHandler of disconnectionHandlers) connHandler(connection);
             });
         });
 
@@ -195,6 +215,8 @@ export function useGlobalPeer(
                 setConnections((prevConnections) =>
                     prevConnections.filter((c) => c !== newConnection)
                 );
+
+                for (const connHandler of disconnectionHandlers) connHandler(newConnection);
             });
 
             newConnection.once("error", (err) => {

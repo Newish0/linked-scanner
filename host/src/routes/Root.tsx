@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useGlobalPeer } from "@hooks/useGlobalPeer";
 import PrepConnectionLoader from "@components/loaders/PrepConnection";
 import { useEffect } from "react";
@@ -10,9 +10,11 @@ import { useAppSettings } from "@atoms/appsettings";
 import { deviceIdToPeerId } from "@shared/utils/convert";
 import { DataConnection } from "peerjs";
 import { db } from "@db/primary";
+import { HistoryType } from "@db/schemas/ScanHistory";
 
 export default function Root() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [appSettings] = useAppSettings();
 
     // Init connection
@@ -26,14 +28,32 @@ export default function Root() {
 
             db.scanHistories.add({
                 deviceId: connection.metadata.client.id,
-                scanContent: keySequence,
+                content: keySequence,
                 createdAt: new Date(),
+                type: HistoryType.Scan,
             });
         }, 300),
+        handleConnection(connection: DataConnection) {
+            db.scanHistories.add({
+                deviceId: connection.metadata.client.id,
+                content: null,
+                createdAt: new Date(),
+                type: HistoryType.Connect,
+            });
+        },
+
+        handleDisconnection(connection: DataConnection) {
+            db.scanHistories.add({
+                deviceId: connection.metadata.client.id,
+                content: null,
+                createdAt: new Date(),
+                type: HistoryType.Disconnect,
+            });
+        },
     });
 
     useEffect(() => {
-        if (localPeer) navigate("/home");
+        if (localPeer && location.pathname === "/") navigate("/home");
     }, [navigate, localPeer]);
 
     if (!localPeer) {
