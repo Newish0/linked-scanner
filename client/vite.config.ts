@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
+import { createHtmlPlugin } from "vite-plugin-html";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
@@ -22,7 +23,7 @@ export default defineConfig(({ command, mode }) => {
                     short_name: "lisc",
                     description: "Use your phone as a barcode scanner for your computer.",
                     theme_color: "#7582ff",
-                    start_url: '/',  
+                    start_url: "/",
                     icons: [
                         {
                             src: "32x32.png",
@@ -40,6 +41,13 @@ export default defineConfig(({ command, mode }) => {
                             type: "image/png",
                         },
                     ],
+                },
+            }),
+            createHtmlPlugin({
+                inject: {
+                    data: {
+                        base: GH_PAGE_BASE,
+                    },
                 },
             }),
         ],
