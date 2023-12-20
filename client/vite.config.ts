@@ -29,7 +29,7 @@ export default defineConfig(({ command, mode }) => {
                     short_name: "lisc",
                     description: "Use your phone as a barcode scanner for your computer.",
                     theme_color: "#7582ff",
-                    start_url: "/",
+                    start_url: GH_PAGE_BASE,
                     icons: [
                         {
                             src: "32x32.png",
