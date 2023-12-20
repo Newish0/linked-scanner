@@ -22,7 +22,7 @@ export default defineConfig(({ command, mode }) => {
                     short_name: "lisc",
                     description: "Use your phone as a barcode scanner for your computer.",
                     theme_color: "#7582ff",
-                    start_url: "https://newish0.github.io/linked-scanner/client",
+                    start_url: '/',  
                     icons: [
                         {
                             src: "32x32.png",
