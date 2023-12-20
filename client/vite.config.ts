@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import { VitePWA } from "vite-plugin-pwa";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
@@ -11,7 +12,37 @@ export default defineConfig(({ command, mode }) => {
     // console.log(path.resolve(__dirname, "../shared"))
 
     return {
-        plugins: [react()],
+        plugins: [
+            react(),
+            VitePWA({
+                registerType: "autoUpdate",
+                includeAssets: ["favicon.ico", "128x128.png", "128x128@2x", "logo.svg"],
+                manifest: {
+                    name: "Linked Scanner - Client",
+                    short_name: "lisc",
+                    description: "Use your phone as a barcode scanner for your computer.",
+                    theme_color: "#7582ff",
+                    start_url: "https://newish0.github.io/linked-scanner/client",
+                    icons: [
+                        {
+                            src: "32x32.png",
+                            sizes: "32x32",
+                            type: "image/png",
+                        },
+                        {
+                            src: "128x128.png",
+                            sizes: "128x128",
+                            type: "image/png",
+                        },
+                        {
+                            src: "128x128@2x.png",
+                            sizes: "256x256",
+                            type: "image/png",
+                        },
+                    ],
+                },
+            }),
+        ],
         resolve: {
             alias: [
                 { find: "@", replacement: path.resolve(__dirname, "src") },
