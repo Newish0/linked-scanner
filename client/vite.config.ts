@@ -17,7 +17,13 @@ export default defineConfig(({ command, mode }) => {
             react(),
             VitePWA({
                 registerType: "autoUpdate",
-                includeAssets: ["favicon.ico", "128x128.png", "128x128@2x", "logo.svg"],
+                includeAssets: [
+                    "favicon.ico",
+                    "128x128.png",
+                    "128x128@2x.png",
+                    "apple-touch-icon.png",
+                    "logo.svg",
+                ],
                 manifest: {
                     name: "Linked Scanner - Client",
                     short_name: "lisc",
