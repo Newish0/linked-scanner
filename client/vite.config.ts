@@ -25,8 +25,8 @@ export default defineConfig(({ command, mode }) => {
                     "logo.svg",
                 ],
                 manifest: {
-                    name: "Linked Scanner - Client",
-                    short_name: "lisc",
+                    name: "Linked Scanner",
+                    short_name: "LISC",
                     description: "Use your phone as a barcode scanner for your computer.",
                     theme_color: "#7582ff",
                     start_url: GH_PAGE_BASE,
