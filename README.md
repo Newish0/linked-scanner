@@ -31,13 +31,6 @@ A lightweight application that turns your smartphone into a wireless barcode sca
 
 
 
-## Key Features 
-- **Wireless Scanning**: Scan barcodes using your smartphone's camera, eliminating the need for a physical barcode scanner device.
-- **Plug and Play**: Simple setup process with no additional hardware required. Just install the app on your phone and computer, and you're ready to go.
-- **Cross-Platform Compatibility**: Works on Windows, macOS, and Linux, ensuring flexibility across different operating systems.
-- **Blazing Fast Connection**: Utilizes a secure peer-to-peer connection for data transfer, ensuring the minimal latency from scan.
-
-
 ## Getting Started 
 
 ### Installation 
@@ -47,7 +40,53 @@ Install the desktop application.
 | [Windows installer](https://github.com/newish0/linked-scanner/releases/latest/download/#) | [Apple Silicon Mac installer](https://github.com/newish0/linked-scanner/releases/latest/download/#) |
 | :---------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------: |
 
-Use the web app on a mobile device 
+Open the web app on a mobile device.
 
-| [PWA Web App](https://newish0.github.io/linked-scanner/client) | 
-| :---------------------------------------------------------------------------------------: | 
+| [PWA Web App](https://newish0.github.io/linked-scanner/client) |
+| :------------------------------------------------------------: |
+
+## Key Features 
+- **Wireless Scanning**: Scan barcodes using your smartphone's camera, eliminating the need for a physical barcode scanner device.
+- **Plug and Play**: Simple setup process with no additional hardware required. Just install the app on your phone and computer, and you're ready to go.
+- **Cross-Platform Compatibility**: Works on Windows, macOS, and Linux, ensuring flexibility across different operating systems.
+- **Blazing Fast Connection**: Utilizes a secure peer-to-peer connection for data transfer, ensuring the minimal latency from scan.
+
+
+## Development
+
+### Project Structure 
+The repo contains two separate applications: 
+1. Desktop app in the `host` sub directory
+2. PWA mobile app in the `client` sub directory
+
+All code shared between the two (i.e types) are in the `shared` directory.
+
+#### Developing the Desktop App
+
+```bash
+git clone https://github.com/Newish0/linked-scanner.git
+```
+
+```bash
+cd host
+npm i
+npm run tauri dev
+```
+
+The desktop app uses Tauri with Vite + React + Tailwind (DaisyUI). 
+
+#### Developing the PWA Mobile App
+
+```bash
+git clone https://github.com/Newish0/linked-scanner.git
+```
+
+```bash
+cd client
+npm i
+npm run dev
+```
+The PWA uses Vite + React + Tailwind (DaisyUI). 
+
+### Contributing
+Contributions are welcome! If you find a bug or have an idea for an improvement, please open an issue or submit a pull request.
