@@ -35,8 +35,8 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-      - name: Build Client
-        run: npm run build-client
+      - name: Build GH Pages
+        run: npm run build-pages
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
