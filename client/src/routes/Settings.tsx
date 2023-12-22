@@ -16,6 +16,11 @@ import {
 } from "@tabler/icons-react";
 import { useState } from "react";
 
+import logo from "@public/128x128.png";
+
+import pkgJson from "@public/../package.json";
+import AboutApp from "@components/AboutApp";
+
 function Settings() {
     const [appSettings, setAppSettings] = useAppSettings();
 
@@ -56,6 +61,10 @@ function Settings() {
                     </SettingsOption>
 
                     <ResetAppOption />
+                </SettingSection>
+
+                <SettingSection title="About">
+                    <AboutApp version={pkgJson.version} logo={logo} />
                 </SettingSection>
             </PageContainer>
         </>

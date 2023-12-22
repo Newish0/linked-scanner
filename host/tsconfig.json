@@ -53,6 +53,9 @@
       "@shared/*": [
         "../../shared/*"
       ],
+      "@public/*": [
+        "../public/*"
+      ],
     }
   },
   "include": [

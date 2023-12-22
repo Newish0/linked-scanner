@@ -8,6 +8,10 @@ import { useState } from "react";
 import { useAppSettings } from "@atoms/appsettings";
 import IDInput from "@components/IDInput";
 
+import logo from "@public/128x128.png";
+import pkgJson from "@public/../package.json";
+import AboutApp from "@components/AboutApp";
+
 export default function Settings() {
     const [appSettings] = useAppSettings();
 
@@ -28,6 +32,10 @@ export default function Settings() {
 
                 <SettingSection title="Developer">
                     <ResetAppOption />
+                </SettingSection>
+
+                <SettingSection title="About">
+                    <AboutApp version={pkgJson.version} logo={logo} />
                 </SettingSection>
             </PageContainer>
         </>

@@ -67,6 +67,7 @@ export default defineConfig(({ command, mode }) => {
                 { find: "@routes", replacement: path.resolve(__dirname, "src/routes") },
                 { find: "@atoms", replacement: path.resolve(__dirname, "src/atoms") },
                 { find: "@shared", replacement: path.resolve(__dirname, "../shared") },
+                { find: "@public", replacement: path.resolve(__dirname, "public") },
                 {
                     find: "tailwind-config",
                     replacement: path.resolve(__dirname, "./tailwind.config.js"),
