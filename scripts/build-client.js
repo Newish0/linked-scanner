@@ -1,16 +1,8 @@
 // build-client.js
 
-import fs from "fs";
-import path from "path";
-import { execSync } from "child_process";
+import { runNpmCommand } from "./utils"
 
-// Function to run npm commands in a specific directory
-const runNpmCommand = (directory, command) => {
-    const currentFileUrl = import.meta.url;
-    const cwd = path.resolve(new URL(currentFileUrl).pathname, '../../', directory);
-    const result = execSync(`npm ${command}`, { cwd, stdio: 'inherit' });
-    return result;
-};
+
 
 // Run npm install and npm run build in the client directory
 runNpmCommand('client', 'install');
