@@ -1,6 +1,6 @@
 // build-client.js
 
-import { runNpmCommand } from "./utils"
+import { runNpmCommand } from "./utils.js"
 
 
 
