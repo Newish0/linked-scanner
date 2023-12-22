@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import BottomNav from "@components/BottomNav";
 import { useGlobalPeer } from "@hooks/useGlobalPeer";
@@ -11,6 +11,7 @@ import { useAppSettings } from "@atoms/appsettings";
 export default function Root() {
     const navigate = useNavigate();
     const [appSettings] = useAppSettings();
+    const location = useLocation();
 
     // Init connection
     const { localPeer } = useGlobalPeer(deviceIdToPeerId(appSettings.thisDevice.id), {
@@ -19,7 +20,7 @@ export default function Root() {
 
     useEffect(() => {
         if (localPeer && location.pathname === "/") navigate("/home");
-    }, [navigate, localPeer]);
+    }, [navigate, localPeer, location.pathname]);
 
     if (!localPeer) {
         return (
