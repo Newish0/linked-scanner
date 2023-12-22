@@ -18,7 +18,7 @@ export default function Root() {
     });
 
     useEffect(() => {
-        if (localPeer) navigate("/home");
+        if (localPeer && location.pathname === "/") navigate("/home");
     }, [navigate, localPeer]);
 
     if (!localPeer) {
