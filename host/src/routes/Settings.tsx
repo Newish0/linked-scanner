@@ -8,8 +8,8 @@ import { useState } from "react";
 import { useAppSettings } from "@atoms/appsettings";
 import IDInput from "@components/IDInput";
 
-import logo from "@public/128x128.png";
-import pkgJson from "@public/../package.json";
+import logo from "/128x128.png?url";
+
 import AboutApp from "@components/AboutApp";
 
 export default function Settings() {
@@ -35,7 +35,7 @@ export default function Settings() {
                 </SettingSection>
 
                 <SettingSection title="About">
-                    <AboutApp version={pkgJson.version} logo={logo} />
+                    <AboutApp version={__APP_VERSION__} logo={logo} />
                 </SettingSection>
             </PageContainer>
         </>

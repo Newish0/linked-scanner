@@ -6,6 +6,10 @@ import path from "path";
 export default defineConfig(async () => ({
     plugins: [react()],
 
+    define: {
+        __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+    },
+
     resolve: {
         alias: [
             { find: "@", replacement: path.resolve(__dirname, "src") },
@@ -18,7 +22,6 @@ export default defineConfig(async () => ({
             { find: "@atoms", replacement: path.resolve(__dirname, "src/atoms") },
             { find: "@db", replacement: path.resolve(__dirname, "src/db") },
             { find: "@shared", replacement: path.resolve(__dirname, "../shared") },
-            { find: "@public", replacement: path.resolve(__dirname, "public") },
 
             {
                 find: "tailwind-config",

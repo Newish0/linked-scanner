@@ -4,6 +4,8 @@ import { createHtmlPlugin } from "vite-plugin-html";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
+
+
 const GH_PAGE_BASE = "https://newish0.github.io/linked-scanner/client";
 
 // https://vitejs.dev/config/
@@ -57,6 +59,11 @@ export default defineConfig(({ command, mode }) => {
                 },
             }),
         ],
+
+        define: {
+            __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+        },
+
         resolve: {
             alias: [
                 { find: "@", replacement: path.resolve(__dirname, "src") },
@@ -67,7 +74,6 @@ export default defineConfig(({ command, mode }) => {
                 { find: "@routes", replacement: path.resolve(__dirname, "src/routes") },
                 { find: "@atoms", replacement: path.resolve(__dirname, "src/atoms") },
                 { find: "@shared", replacement: path.resolve(__dirname, "../shared") },
-                { find: "@public", replacement: path.resolve(__dirname, "public") },
                 {
                     find: "tailwind-config",
                     replacement: path.resolve(__dirname, "./tailwind.config.js"),
