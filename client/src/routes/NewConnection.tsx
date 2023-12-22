@@ -7,9 +7,10 @@ import { DeviceId, LinkedDevice } from "@shared/type/device";
 import { ConnectionMetadata } from "@shared/type/peer";
 import { deviceIdToPeerId } from "@shared/utils/convert";
 import { isDeviceId } from "@shared/utils/device";
+import { IconPlugConnected } from "@tabler/icons-react";
 import { DataConnection } from "peerjs";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 export default function NewConnection() {
     const [appSettings, setAppSettings] = useAppSettings();
@@ -78,7 +79,7 @@ export default function NewConnection() {
 
     if (hasDeviceIdErr) {
         return (
-            <PageContainer>
+            <PageContainer align="center">
                 <PageSection>
                     <Alert btnText={"Back"} type="warning">
                         Device id <code>{deviceId}</code> is invalid.
@@ -90,7 +91,7 @@ export default function NewConnection() {
 
     if (connErr) {
         return (
-            <PageContainer>
+            <PageContainer align="center">
                 <PageSection>
                     <Alert btnText={"Back"} type="error">
                         {connErr}
@@ -102,7 +103,7 @@ export default function NewConnection() {
 
     if (!newConnection) {
         return (
-            <PageContainer>
+            <PageContainer align="center">
                 <PageSection>
                     <div className="flex gap-4">
                         <span className="loading loading-ring loading-lg"></span>
@@ -118,11 +119,21 @@ export default function NewConnection() {
     const metadata = newConnection.metadata as ConnectionMetadata;
 
     return (
-        <PageContainer>
+        <PageContainer align="center">
             <PageSection>
-                <div>Connected to {metadata.host.name}</div>
-                <div>
-                    DeviceID: <code>{metadata.host.id}</code>
+                <div role="alert" className="alert alert-success shadow-lg">
+                    <IconPlugConnected />
+                    <div>
+                        <h3 className="font-bold">
+                            Successfully connected to {metadata.host.name}!
+                        </h3>
+                        <div className="text-xs">
+                            DeviceID: <code>{metadata.host.id}</code>
+                        </div>
+                    </div>
+                    <Link to="/scan/" className="btn">
+                        Start Scanning
+                    </Link>
                 </div>
             </PageSection>
         </PageContainer>
