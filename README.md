@@ -35,7 +35,7 @@ A lightweight application that turns your smartphone into a wireless barcode sca
 
 ### Installation 
 
-Install the desktop application. 
+Install the desktop application via the the [release page](https://github.com/Newish0/linked-scanner/releases) or try the links below. 
 
 | [Windows installer](https://github.com/newish0/linked-scanner/releases/latest/download/#) | [Apple Silicon Mac installer](https://github.com/newish0/linked-scanner/releases/latest/download/#) |
 | :---------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------: |
