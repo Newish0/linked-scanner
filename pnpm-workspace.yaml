@@ -1,0 +1,24 @@
+packages:
+  - 'receiver'
+  - 'scanner'
+
+catalog:
+  # shared dependencies
+  '@tailwindcss/vite': ^4.1.18
+  '@tanstack/router-plugin': ^1.133.21
+  '@tanstack/solid-router': latest
+  '@tanstack/solid-router-devtools': latest
+  '@tabler/icons-solidjs': latest
+  solid-js: ^1.9.12
+  tailwindcss: ^4.1.18
+  idb-keyval: ^6.3.0
+
+  # shared devDependencies
+  '@tanstack/devtools-vite': latest
+  '@tanstack/router-cli': ^1.133.21
+  typescript: 7.0.1-rc
+  vite: ^8.0.0
+  vite-plugin-solid: ^2.11.0
+  vitest: ^4.1.5
+  daisyui: latest
+  

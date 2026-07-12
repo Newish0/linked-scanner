@@ -1,0 +1,37 @@
+{
+  "name": "receiver",
+  "version": "0.1.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "tauri": "tauri"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@tailwindcss/vite": "catalog:",
+    "@tanstack/router-plugin": "catalog:",
+    "@tanstack/solid-router": "catalog:",
+    "@tanstack/solid-router-devtools": "catalog:",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2",
+    "solid-js": "catalog:",
+    "tailwindcss": "catalog:",
+    "@tabler/icons-solidjs": "catalog:",
+    "idb-keyval": "catalog:"
+  },
+  "devDependencies": {
+    "@tanstack/devtools-vite": "catalog:",
+    "@tanstack/router-cli": "catalog:",
+    "@tanstack/router-plugin": "catalog:",
+    "@tauri-apps/cli": "^2",
+    "daisyui": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-plugin-solid": "catalog:",
+    "vitest": "catalog:"
+  }
+}
