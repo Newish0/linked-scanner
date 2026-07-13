@@ -1,69 +1,48 @@
 import { createFileRoute } from "@tanstack/solid-router";
-import { type DataConnection, Peer } from "peerjs";
-import { getDeviceId } from "../utils/deviceId";
-import { createSignal, For, onMount, Show } from "solid-js";
-import QRCode from "qrcode";
+import { createSignal, For, Show } from "solid-js";
+import { IconPlus } from "@tabler/icons-solidjs";
+import { connections, isConnected } from "core/stores/peer-connection";
+import { ConnectionQRCard } from "@/components/connection-qr-card";
+import { ConnectionCard } from "@/components/connection-card";
+import { Modal } from "@/components/modal";
 
 export const Route = createFileRoute("/scanners")({
     component: RouteComponent,
 });
 
 function RouteComponent() {
-    const deviceId = getDeviceId();
-    const [deviceQRCode, setDeviceQRCode] = createSignal("");
-    const [connections, setConnections] = createSignal<DataConnection[]>([]);
-    const isConnected = () => connections().length > 0;
-
-    const receiver = new Peer(deviceId, {});
-
-    receiver.on("connection", function (conn) {
-        setConnections((prev) => [...prev, conn]);
-
-        conn.on("data", function (data) {
-            console.log(data);
-        });
-
-        conn.on("close", function () {
-            setConnections((prev) => prev.filter((c) => c !== conn));
-        });
-    });
-
-    onMount(() => {
-        QRCode.toDataURL(`https://newish0.github.io/linked-scanner/scanner?id=${deviceId}`, {
-            color: { dark: "#1d232a" },
-        }).then(setDeviceQRCode);
-    });
+    const [modalOpen, setModalOpen] = createSignal(false);
 
     return (
-        <div class="p-4">
-            <Show when={!isConnected()}>
-                <div class="space-y-2 p-4 bg-base-200 rounded-box">
-                    <h3 class="text-lg font-bold">Link new device</h3>
-                    <img src={deviceQRCode()} class="mx-auto rounded-box" />
-                    <p class="text-center font-medium animate-pulse">Waiting for connection</p>
-                    <p class="text-center text-neutral-content">
-                        Scan this QR code or visit{" "}
-                        <a
-                            href={`https://newish0.github.io/linked-scanner/scanner`}
-                            class="link link-primary"
-                        >
-                            Linked Scanner
-                        </a>{" "}
-                        on your mobile device to connect
-                    </p>
+        <div class="p-4 space-y-4">
+            <Show
+                when={isConnected()}
+                fallback={
+                    <div class="card bg-base-200">
+                        <div class="card-body">
+                            <ConnectionQRCard />
+                        </div>
+                    </div>
+                }
+            >
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-bold">
+                        Connected devices
+                    </h2>
+                    <button class="btn btn-primary btn-sm" onClick={() => setModalOpen(true)}>
+                        <IconPlus class="size-4" />
+                        Add device
+                    </button>
+                </div>
+
+                <div class="space-y-2">
+                    <For each={connections()}>{(conn) => <ConnectionCard conn={conn} />}</For>
                 </div>
             </Show>
 
-            <div class="space-y-2 p-4 bg-base-200 rounded-box">
-                <For each={connections()}>
-                    {(conn) => (
-                        <div class="space-y-2 p-4 bg-base-200 rounded-box">
-                            <h3 class="text-lg font-bold">{conn.peer}</h3>
-                            <p class="text-center text-neutral-content">Connected</p>
-                        </div>
-                    )}
-                </For>
-            </div>
+            <Modal open={modalOpen()} onClose={() => setModalOpen(false)} title="Link new device">
+                <ConnectionQRCard />
+            </Modal>
         </div>
     );
 }

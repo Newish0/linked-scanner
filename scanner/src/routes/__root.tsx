@@ -31,11 +31,11 @@ const appRoutes: DockRoute[] = [
 function RootComponent() {
     return (
         <>
+            <Toaster position="top-center" />
+
             <main class="h-[calc(100vh-64px)] overflow-auto">
                 <Outlet />
             </main>
-
-            <Toaster position="top-center" />
 
             <AppDock routes={appRoutes} />
 

@@ -15,9 +15,6 @@ declare module "@tanstack/solid-router" {
     }
 }
 
-if (localStorage.getItem("deviceId") === null)
-    localStorage.setItem("deviceId", crypto.randomUUID());
-
 const rootElement = document.getElementById("app")!;
 
 if (!rootElement.innerHTML) {

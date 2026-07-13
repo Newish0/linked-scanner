@@ -1,11 +1,12 @@
+import { makePersisted } from "@solid-primitives/storage";
 import { IconCameraRotate } from "@tabler/icons-solidjs";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 import { NotFoundException } from "@zxing/library";
 import { createSignal, For, mergeProps, onCleanup, onMount, Show } from "solid-js";
-import appToast from "./app-toast";
 
 interface CodeScannerProps {
-    onResult?: (text: string) => void;
+    onResult: (text: string) => void;
+    onError: (error: Error) => void;
     interval?: number;
     maxDecodeWidth?: number;
     contrast?: number;
@@ -20,6 +21,10 @@ export default function CodeScanner(props: CodeScannerProps) {
         props,
     );
 
+    const [lastDeviceId, setLastDeviceId] = makePersisted(createSignal<string>(), {
+        name: "lastCameraDeviceId",
+        storage: localStorage,
+    });
     const [devices, setDevices] = createSignal<MediaDeviceInfo[]>([]);
 
     let videoRef: HTMLVideoElement | undefined;
@@ -41,11 +46,12 @@ export default function CodeScanner(props: CodeScannerProps) {
         ctx.drawImage(videoRef, 0, 0, canvas.width, canvas.height);
         try {
             const decodeResult = await codeReader.decodeFromCanvas(canvas);
-            appToast.info(decodeResult.getText());
-            props.onResult?.(decodeResult.getText());
+            // appToast.info(decodeResult.getText());
+            props.onResult(decodeResult.getText());
         } catch (err) {
             if (!(err instanceof NotFoundException)) {
-                appToast.error(err instanceof Error ? err.message : String(err));
+                // appToast.error(err instanceof Error ? err.message : String(err));
+                props.onError(err instanceof Error ? err : new Error(String(err)));
             }
         } finally {
             busy = false;
@@ -67,15 +73,21 @@ export default function CodeScanner(props: CodeScannerProps) {
         try {
             const videoInputDevices = await BrowserMultiFormatReader.listVideoInputDevices();
             setDevices(videoInputDevices);
-            const defaultId = videoInputDevices[0]?.deviceId ?? null;
+            const defaultId =
+                (lastDeviceId() &&
+                    videoInputDevices.find((d) => d.deviceId === lastDeviceId())?.deviceId) ??
+                videoInputDevices[0]?.deviceId ??
+                null;
             await startStream(defaultId);
         } catch (err) {
-            appToast.error("Could not access camera devices.");
+            // appToast.error("Could not access camera devices.");
+            props.onError(err instanceof Error ? err : new Error(String(err)));
         }
     });
 
     const handleDeviceChange = (deviceId: string) => {
         startStream(deviceId);
+        setLastDeviceId(deviceId);
     };
 
     onCleanup(() => {
@@ -88,7 +100,7 @@ export default function CodeScanner(props: CodeScannerProps) {
         <div class="h-full relative">
             <video
                 ref={videoRef}
-                class="h-full object-cover"
+                class="h-full w-full object-cover"
                 style={{
                     filter: `contrast(${finalProps.contrast}%) brightness(${finalProps.brightness}%)`,
                 }}
@@ -98,40 +110,18 @@ export default function CodeScanner(props: CodeScannerProps) {
             />
 
             <Show when={devices().length > 1}>
-                <label class="form-control absolute bottom-4 inset-x-4 flex gap-4">
-                    {/* <div class="label">
-                        <span class="label-text">Camera source</span>
+                <div class="fab inset-y-20">
+                    <div tabindex="0" role="button" class="btn btn-lg btn-circle btn-primary btn-soft">
+                        <IconCameraRotate />
                     </div>
-                    <select
-                        class="select select-bordered select-sm"
-                        value={selectedDeviceId()}
-                        onChange={(e) => handleDeviceChange(e.currentTarget.value)}
-                    >
-                        <For each={devices()}>
-                            {(device) => (
-                                <option value={device.deviceId}>
-                                    {device.label || `Camera ${device.deviceId.slice(0, 6)}`}
-                                </option>
-                            )}
-                        </For>
-                    </select> */}
-
-                    <div class="fab inset-y-20">
-                        <div tabindex="0" role="button" class="btn btn-lg btn-circle btn-primary">
-                            <IconCameraRotate />
-                        </div>
-                        <For each={devices()}>
-                            {(device) => (
-                                <button
-                                    class="btn"
-                                    onClick={() => handleDeviceChange(device.deviceId)}
-                                >
-                                    {device.label || `Camera ${device.deviceId.slice(0, 6)}`}
-                                </button>
-                            )}
-                        </For>
-                    </div>
-                </label>
+                    <For each={devices()}>
+                        {(device) => (
+                            <button class="btn" onClick={() => handleDeviceChange(device.deviceId)}>
+                                {device.label || `Camera ${device.deviceId.slice(0, 6)}`}
+                            </button>
+                        )}
+                    </For>
+                </div>
             </Show>
         </div>
     );

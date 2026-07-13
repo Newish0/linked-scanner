@@ -12,7 +12,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@solid-primitives/storage": "^4.4.0",
+    "@solid-primitives/storage": "catalog:",
     "@tabler/icons-solidjs": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/router-plugin": "catalog:",
@@ -24,7 +24,9 @@
     "peerjs": "catalog:",
     "qrcode": "^1.5.4",
     "solid-js": "catalog:",
-    "tailwindcss": "catalog:"
+    "tailwindcss": "catalog:",
+    "core": "workspace:*",
+    "solid-sonner": "catalog:"
   },
   "devDependencies": {
     "@tanstack/devtools-vite": "catalog:",

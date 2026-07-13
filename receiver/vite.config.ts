@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import { devtools } from "@tanstack/devtools-vite";
 import tailwindcss from "@tailwindcss/vite";
+import path from "path";
 
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 
@@ -37,6 +38,11 @@ export default defineConfig(async () => ({
         watch: {
             // 3. tell Vite to ignore watching `src-tauri`
             ignored: ["**/src-tauri/**"],
+        },
+    },
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "./src"),
         },
     },
 }));

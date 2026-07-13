@@ -5,6 +5,10 @@
 			"path": "./"
 		},
 		{
+			"name": "Core",
+			"path": "./core"
+		},
+		{
 			"name": "Scanner",
 			"path": "./scanner"
 		},

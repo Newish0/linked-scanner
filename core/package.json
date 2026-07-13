@@ -1,0 +1,23 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "peerDependencies": {
+    "@solid-primitives/storage": "catalog:",
+    "solid-js": "catalog:",
+    "peerjs": "catalog:",
+    "tailwind-merge": "catalog:",
+    "clsx": "catalog:",
+    "idb-keyval": "catalog:",
+    "solid-sonner": "catalog:",
+    "@tabler/icons-solidjs": "catalog:"
+  }
+}

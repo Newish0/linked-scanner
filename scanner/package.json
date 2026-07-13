@@ -10,6 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@solid-primitives/storage": "catalog:",
     "@tabler/icons-solidjs": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/router-plugin": "catalog:",
@@ -19,9 +20,10 @@
     "@zxing/library": "0.22.0",
     "idb-keyval": "catalog:",
     "solid-js": "catalog:",
-    "solid-sonner": "^0.3.1",
+    "solid-sonner": "catalog:",
     "tailwindcss": "catalog:",
-    "peerjs": "catalog:"
+    "peerjs": "catalog:",
+    "core": "workspace:*"
   },
   "devDependencies": {
     "@solidjs/testing-library": "^0.8.10",

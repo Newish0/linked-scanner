@@ -18,7 +18,7 @@ export default function Sidebar(props: SidebarProps) {
 
     return (
         <div class="drawer h-screen bg-base-200">
-            <div class="drawer-content pt-2 pb-2 pr-2">
+            <div class="drawer-content max-h-screen pt-2 pb-2 pr-2">
                 <div class="rounded-box h-full bg-base-100 overflow-auto">{safeChildren()}</div>
             </div>
 

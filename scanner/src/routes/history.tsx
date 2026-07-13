@@ -1,9 +1,14 @@
-import { createFileRoute } from '@tanstack/solid-router'
+import { HistoryList } from "core/components/history-list";
+import { createFileRoute } from "@tanstack/solid-router";
 
-export const Route = createFileRoute('/history')({
-  component: RouteComponent,
-})
+export const Route = createFileRoute("/history")({
+    component: RouteComponent,
+});
 
 function RouteComponent() {
-  return <div>Hello "/history"!</div>
+    return (
+        <div class="p-4">
+            <HistoryList />
+        </div>
+    );
 }
