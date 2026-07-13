@@ -1,7 +1,15 @@
-import { IconHome, IconLayoutSidebarLeftExpand, IconSettings } from "@tabler/icons-solidjs";
-import { children, type JSX } from "solid-js";
+import { Link, type RoutePaths } from "@tanstack/solid-router";
+import { children, For, type JSX } from "solid-js";
+import type { routeTree } from "../routeTree.gen";
+
+export type SidebarRoute = {
+    name: string;
+    path: RoutePaths<typeof routeTree>;
+    icon: JSX.Element;
+};
 
 type SidebarProps = {
+    routes: SidebarRoute[];
     children: JSX.Element;
 };
 
@@ -9,48 +17,29 @@ export default function Sidebar(props: SidebarProps) {
     const safeChildren = children(() => props.children);
 
     return (
-        <div class="drawer lg:drawer-open">
-            <input id="app-sidebar" type="checkbox" class="drawer-toggle" />
-            <div class="drawer-content">
-                <nav class="navbar w-full bg-base-300">
-                    <label
-                        for="app-sidebar"
-                        aria-label="open sidebar"
-                        class="btn btn-square btn-ghost"
-                    >
-                        <IconLayoutSidebarLeftExpand />
-                    </label>
-                    <div class="px-4">Navbar Title</div>
-                </nav>
-                <div class="p-4">{safeChildren()}</div>
+        <div class="drawer h-screen bg-base-200">
+            <div class="drawer-content pt-2 pb-2 pr-2">
+                <div class="rounded-box h-full bg-base-100 overflow-auto">{safeChildren()}</div>
             </div>
 
-            <div class="drawer-side is-drawer-close:overflow-visible">
-                <label for="app-sidebar" aria-label="close sidebar" class="drawer-overlay"></label>
-                <div class="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
-                    <ul class="menu w-full grow">
+            <ul class="menu menu-sm w-full grow">
+                <For each={props.routes}>
+                    {(route) => (
                         <li>
-                            <button
-                                class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                                data-tip="Homepage"
+                            <Link
+                                to={route.path}
+                                class="tooltip tooltip-right aspect-square flex justify-center items-center"
+                                data-tip={route.name}
+                                activeProps={{
+                                    class: "menu-active",
+                                }}
                             >
-                                <IconHome />
-                                <span class="is-drawer-close:hidden">Homepage</span>
-                            </button>
+                                {route.icon}
+                            </Link>
                         </li>
-
-                        <li>
-                            <button
-                                class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                                data-tip="Settings"
-                            >
-                                <IconSettings />
-                                <span class="is-drawer-close:hidden">Settings</span>
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+                    )}
+                </For>
+            </ul>
         </div>
     );
 }

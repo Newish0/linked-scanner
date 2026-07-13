@@ -12,6 +12,7 @@ catalog:
   solid-js: ^1.9.12
   tailwindcss: ^4.1.18
   idb-keyval: ^6.3.0
+  peerjs: ^1.5.5
 
   # shared devDependencies
   '@tanstack/devtools-vite': latest

@@ -20,7 +20,8 @@
     "idb-keyval": "catalog:",
     "solid-js": "catalog:",
     "solid-sonner": "^0.3.1",
-    "tailwindcss": "catalog:"
+    "tailwindcss": "catalog:",
+    "peerjs": "catalog:"
   },
   "devDependencies": {
     "@solidjs/testing-library": "^0.8.10",
