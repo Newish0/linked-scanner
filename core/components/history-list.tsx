@@ -15,7 +15,7 @@ import {
     isScanReceivedHistory,
 } from "../stores/history";
 import { appToast } from "../components/app-toast";
-import { connect, sendScan } from "../stores/peer-connection";
+import { connect, sendScan, getPeerName } from "../stores/peer-connection";
 
 const timeFormatter = new Intl.DateTimeFormat(undefined, {
     hour: "2-digit",
@@ -35,7 +35,7 @@ let isReconnecting = false;
 const handleReconnect = async (entry: HistoryEntry & { type: "connection" }) => {
     if (isReconnecting) return;
     isReconnecting = true;
-    const label = entry.name ?? entry.peerId;
+    const label = getPeerName(entry.peerId) ?? entry.peerId;
     appToast.loading(`Reconnecting to ${label}...`, { id: "reconnect" });
     try {
         await connect(entry.peerId);
@@ -84,7 +84,9 @@ function HistoryRow(props: { entry: HistoryEntry }) {
                         {(entry) => (
                             <div class="truncate">
                                 Connected to{" "}
-                                <span class="font-semibold">{entry().name ?? entry().peerId}</span>
+                                <span class="font-semibold">
+                                    {getPeerName(entry().peerId) ?? entry().peerId}
+                                </span>
                             </div>
                         )}
                     </Match>
@@ -95,14 +97,14 @@ function HistoryRow(props: { entry: HistoryEntry }) {
                     <Show when={isScanSentHistory(props.entry) ? props.entry : undefined}>
                         {(entry) => (
                             <span class="badge badge-soft badge-info badge-sm normal-case">
-                                sent to {entry().receiverIds.length}
+                                sent to {entry().receiverIds.length} receivers
                             </span>
                         )}
                     </Show>
                     <Show when={isScanReceivedHistory(props.entry) ? props.entry : undefined}>
                         {(entry) => (
                             <span class="badge badge-soft badge-info badge-sm normal-case">
-                                from {entry().scannerId}
+                                from {getPeerName(entry().scannerId) ?? entry().scannerId}
                             </span>
                         )}
                     </Show>

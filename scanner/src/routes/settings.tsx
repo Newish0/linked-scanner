@@ -1,3 +1,4 @@
+import ScannerSettings from "@/components/scanner-settings";
 import { createFileRoute } from "@tanstack/solid-router";
 
 export const Route = createFileRoute("/settings")({
@@ -5,5 +6,9 @@ export const Route = createFileRoute("/settings")({
 });
 
 function RouteComponent() {
-    return <div>Hello "/settings"!</div>;
+    return (
+        <div class="p-4">
+            <ScannerSettings />
+        </div>
+    );
 }

@@ -2,16 +2,33 @@ import appToast from "core/components/app-toast";
 import CodeScanner from "@/components/code-scanner";
 import { IconDevices2 } from "@tabler/icons-solidjs";
 import { createFileRoute } from "@tanstack/solid-router";
-import { connect, connections, isConnected, sendScan } from "core/stores/peer-connection";
+import {
+    connect,
+    connections,
+    getPeerName,
+    isConnected,
+    sendScan,
+} from "core/stores/peer-connection";
 import { getDeviceIdFromUrl } from "core/utils/scanner-url";
 import { cn } from "core/utils/tw";
-import { createEffect, For, onCleanup } from "solid-js";
+import { createEffect, createSignal, For, onCleanup } from "solid-js";
+import { makePersisted } from "@solid-primitives/storage";
 
 export const Route = createFileRoute("/scan")({
     component: RouteComponent,
 });
 
 function RouteComponent() {
+    const [camContrast] = makePersisted(createSignal(100), {
+        name: "camContrast",
+        storage: localStorage,
+    });
+
+    const [camBrightness] = makePersisted(createSignal(100), {
+        name: "camBrightness",
+        storage: localStorage,
+    });
+
     let isConnecting = false;
 
     let lastScannedCode = "";
@@ -53,7 +70,7 @@ function RouteComponent() {
 
     createEffect(async () => {
         if (!isConnected()) {
-            appToast.warning("You are not connected to any receiver yet.", {
+            appToast.warning("You are not connected to any receiver.", {
                 id: "no-connection",
                 dismissible: false,
                 description: "Scan the QR code of the receiver to connect.",
@@ -70,7 +87,12 @@ function RouteComponent() {
 
     return (
         <div class="flex flex-col h-full">
-            <CodeScanner onResult={handleScan} onError={handleError} />
+            <CodeScanner
+                onResult={handleScan}
+                onError={handleError}
+                brightness={camBrightness()}
+                contrast={camContrast()}
+            />
 
             <div class="fab inset-y-20 left-4 flex items-start">
                 <div class="indicator">
@@ -92,7 +114,7 @@ function RouteComponent() {
                 <For each={connections()}>
                     {(conn) => (
                         <button class="btn">
-                            {conn.metadata?.name || `Device ${conn.peer.slice(0, 6)}`}
+                            {getPeerName(conn.peer) || `Device ${conn.peer.slice(0, 6)}`}
                         </button>
                     )}
                 </For>

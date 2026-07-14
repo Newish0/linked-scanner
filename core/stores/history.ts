@@ -19,7 +19,6 @@ type ConnectionEntry = {
     type: "connection";
     timestamp: number;
     peerId: string;
-    name?: string;
 };
 export type HistoryEntry = ScanSentEntry | ScanReceivedEntry | ConnectionEntry;
 
@@ -54,8 +53,8 @@ export function addScanSentHistory(content: string, receiverIds: string[]) {
     ]);
 }
 
-export function addConnectionHistory(peerId: string, name?: string) {
-    setHistory((prev) => [...prev, { type: "connection", peerId, name, timestamp: Date.now() }]);
+export function addConnectionHistory(peerId: string) {
+    setHistory((prev) => [...prev, { type: "connection", peerId, timestamp: Date.now() }]);
 }
 
 export function addScanReceivedHistory(content: string, scannerId: string) {

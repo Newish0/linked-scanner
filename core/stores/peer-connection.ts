@@ -1,6 +1,7 @@
 import { Peer, type DataConnection } from "peerjs";
 import { createSignal } from "solid-js";
-import { getDeviceId, getDeviceName } from "../utils/deviceId";
+import { makePersisted } from "@solid-primitives/storage";
+import { deviceId, deviceName } from "./device";
 import { addConnectionHistory, addScanSentHistory, addScanReceivedHistory } from "./history";
 
 // ===== types =====
@@ -10,19 +11,32 @@ type ScanData = {
     content: string;
 };
 
-type Data = ScanData;
+type HelloData = {
+    type: "hello";
+    name: string;
+};
+
+type Data = ScanData | HelloData;
 
 type DataHandler = (conn: DataConnection, data: Data) => void;
 
 // ===== state =====
 
-const deviceId = getDeviceId();
-const deviceName = getDeviceName();
+const [_connections, _setConnections] = createSignal<DataConnection[]>([]);
+export const connections = () => _connections();
+export const isConnected = () => _connections().length > 0;
 
-export const [connections, setConnections] = createSignal<DataConnection[]>([]);
-export const isConnected = () => connections().length > 0;
+// Reactive map of peerId -> the name they told us about themselves via "hello".
+// Persisted so we still remember a peer's name across reloads, even before
+// we've re-connected and received a fresh "hello" from them.
+const [peerNames, setPeerNames] = makePersisted(createSignal<Map<string, string>>(new Map()), {
+    name: "peerNames",
+    serialize: (value) => JSON.stringify([...value.entries()]),
+    deserialize: (value) => new Map(JSON.parse(value)),
+});
+export const getPeerName = (peerId: string) => peerNames().get(peerId);
 
-const peer = new Peer(deviceId, {});
+const peer = new Peer(deviceId(), {});
 
 // Maps each user-supplied callback to the per-connection wrapper functions
 // actually registered on that connection, so we can remove the exact same
@@ -31,8 +45,21 @@ const wrappers = new Map<DataHandler, Map<DataConnection, (data: unknown) => voi
 
 // ===== guards =====
 
-const isValidData = (data: unknown): data is Data =>
-    data !== null && typeof data === "object" && "type" in data && "content" in data;
+const isValidData = (data: unknown): data is Data => {
+    if (data === null || typeof data !== "object" || !("type" in data)) return false;
+
+    const d = data as { type: unknown };
+
+    if (d.type === "scan") {
+        return "content" in data && typeof (data as { content: unknown }).content === "string";
+    }
+
+    if (d.type === "hello") {
+        return "name" in data && typeof (data as { name: unknown }).name === "string";
+    }
+
+    return false;
+};
 
 // ===== helpers =====
 
@@ -65,7 +92,7 @@ const detachFromConnection = (conn: DataConnection) => {
 // someone" code paths so both are tracked identically.
 const trackReceivedScans = (conn: DataConnection) => {
     const handler = (data: unknown) => {
-        if (isValidData(data)) {
+        if (isValidData(data) && data.type === "scan") {
             addScanReceivedHistory(data.content, conn.peer);
         }
     };
@@ -75,22 +102,54 @@ const trackReceivedScans = (conn: DataConnection) => {
     });
 };
 
+// Listens for "hello" messages on a connection and records the peer's
+// self-reported name, so both sides learn each other's name regardless
+// of who initiated the connection.
+const trackHello = (conn: DataConnection) => {
+    const handler = (data: unknown) => {
+        if (isValidData(data) && data.type === "hello") {
+            setPeerNames((prev) => {
+                const next = new Map(prev);
+                next.set(conn.peer, data.name);
+                return next;
+            });
+        }
+    };
+    conn.on("data", handler);
+    conn.on("close", () => {
+        conn.off("data", handler);
+    });
+};
+
+// Tells the given connection our own device name. Sent as soon as a
+// connection opens, from both sides, so name exchange doesn't depend
+// on which side initiated the connection.
+const sayHello = (conn: DataConnection) => {
+    conn.send({ type: "hello", name: deviceName() } satisfies HelloData);
+};
+
 const registerConnection = (conn: DataConnection, peerId: string) => {
-    setConnections((prev) => [...prev, conn]);
+    _setConnections((prev) => [...prev, conn]);
     attachToConnection(conn);
     trackReceivedScans(conn);
-    addConnectionHistory(peerId, conn.metadata?.name);
+    trackHello(conn);
+    addConnectionHistory(peerId);
+    sayHello(conn);
 
     conn.on("close", () => {
-        setConnections((prev) => prev.filter((c) => c !== conn));
+        _setConnections((prev) => prev.filter((c) => c !== conn));
         detachFromConnection(conn);
+        // Note: peerNames is intentionally left alone here - it's persisted
+        // now, so we keep remembering a peer's name after they disconnect.
     });
 };
 
 // ===== event handlers =====
 
 peer.on("connection", (conn) => {
-    registerConnection(conn, conn.peer);
+    conn.on("open", () => {
+        registerConnection(conn, conn.peer);
+    });
 });
 
 export const onData = (cb: DataHandler) => {
@@ -99,7 +158,7 @@ export const onData = (cb: DataHandler) => {
         connMap = new Map();
         wrappers.set(cb, connMap);
     }
-    for (const conn of connections()) {
+    for (const conn of _connections()) {
         attachToConnection(conn);
     }
 };
@@ -116,7 +175,7 @@ export const offData = (cb: DataHandler) => {
 // ===== actions =====
 
 export const connect = (id: string, timeout = 30000) => {
-    const existingConnection = connections().find((c) => c.peer === id);
+    const existingConnection = _connections().find((c) => c.peer === id);
     if (existingConnection) throw new Error("Already connected");
 
     return new Promise<DataConnection>((resolve, reject) => {
@@ -138,7 +197,7 @@ export const connect = (id: string, timeout = 30000) => {
 };
 
 const sendData = (data: Data) => {
-    for (const conn of connections()) {
+    for (const conn of _connections()) {
         conn.send(data);
     }
 };
@@ -151,6 +210,6 @@ export const sendScan = (content: string) => {
 
     addScanSentHistory(
         content,
-        connections().map((c) => c.peer),
+        _connections().map((c) => c.peer),
     );
 };

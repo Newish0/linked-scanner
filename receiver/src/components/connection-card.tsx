@@ -1,4 +1,5 @@
 import { IconDeviceMobile } from "@tabler/icons-solidjs";
+import { getPeerName } from "core/stores/peer-connection";
 import type { DataConnection } from "peerjs";
 
 export function ConnectionCard(props: { conn: DataConnection }) {
@@ -11,7 +12,7 @@ export function ConnectionCard(props: { conn: DataConnection }) {
                 <IconDeviceMobile class="size-5" />
             </div>
             <div class="flex-1 min-w-0">
-                <h3 class="font-bold truncate">{props.conn.metadata.name || props.conn.peer}</h3>
+                <h3 class="font-bold truncate">{getPeerName(props.conn.peer) || props.conn.peer}</h3>
                 <span class="badge badge-success badge-sm">Connected</span>
             </div>
             <div>
