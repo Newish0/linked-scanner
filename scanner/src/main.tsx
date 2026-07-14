@@ -3,6 +3,7 @@ import { RouterProvider, createRouter } from '@tanstack/solid-router'
 import { routeTree } from './routeTree.gen'
 
 const router = createRouter({
+  basepath: (import.meta.env.VITE_BASE_PATH || '').replace(/\/$/, '') || undefined,
   routeTree,
   defaultPreload: 'intent',
   defaultPreloadStaleTime: 0,
