@@ -1,9 +1,14 @@
-import { createFileRoute } from '@tanstack/solid-router'
+import ReceiverSettings from "@/components/receiver-settings";
+import { createFileRoute } from "@tanstack/solid-router";
 
-export const Route = createFileRoute('/settings')({
-  component: RouteComponent,
-})
+export const Route = createFileRoute("/settings")({
+    component: RouteComponent,
+});
 
 function RouteComponent() {
-  return <div>Hello "/settings"!</div>
+    return (
+        <div class="p-4">
+            <ReceiverSettings />
+        </div>
+    );
 }

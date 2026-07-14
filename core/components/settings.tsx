@@ -291,27 +291,29 @@ function SettingItem(props: { setting: Setting }) {
             class={rowClass(position())}
             classList={{ "opacity-50 pointer-events-none": !!props.setting.disabled }}
         >
-            <div class="flex flex-1 items-start gap-3">
-                <Show when={props.setting.icon}>
-                    {(icon) => (
-                        <span class="mt-0.5 shrink-0 text-base-content/70">
-                            <Dynamic component={icon()} size={22} strokeWidth={1.75} />
-                        </span>
-                    )}
-                </Show>
-                <div class="space-y-0.5">
-                    <label for={props.setting.id} class="text-sm font-medium leading-none">
-                        {props.setting.label}
-                    </label>
-                    <Show when={props.setting.description}>
-                        {(description) => (
-                            <p class="text-sm text-base-content/60">{description()}</p>
+            <Show when={props.setting.label || props.setting.description || props.setting.icon}>
+                <div class="flex flex-1 items-start gap-3">
+                    <Show when={props.setting.icon}>
+                        {(icon) => (
+                            <span class="mt-0.5 shrink-0 text-base-content/70">
+                                <Dynamic component={icon()} size={22} strokeWidth={1.75} />
+                            </span>
                         )}
                     </Show>
+                    <div class="space-y-0.5">
+                        <label for={props.setting.id} class="text-sm font-medium leading-none">
+                            {props.setting.label}
+                        </label>
+                        <Show when={props.setting.description}>
+                            {(description) => (
+                                <p class="text-sm text-base-content/60">{description()}</p>
+                            )}
+                        </Show>
+                    </div>
                 </div>
-            </div>
+            </Show>
 
-            <div class={controlClass(position())}>
+            <div class={cn(props.setting.type === "custom" ? "" : controlClass(position()))}>
                 <SettingControl setting={props.setting} />
             </div>
         </div>

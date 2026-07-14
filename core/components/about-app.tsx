@@ -15,11 +15,11 @@ export default function AboutApp(props: AboutAppProps) {
         return url.hostname + url.pathname;
     };
     return (
-        <>
-            <div class="flex items-center gap-2 mb-2">
-                <img src={props.logo} class="w-16" />
+        <div class="flex flex-wrap items-center">
+            <div class="flex items-center gap-2 mb-1">
+                <img src={props.logo} class="size-16" />
                 <div>
-                    <h1 class="text-primary text-2xl">
+                    <h1 class="text-primary text-2xl leading-5">
                         {props.appName}
                         <sup class="text-xs ml-1">{props.appSuperName}</sup>
                     </h1>
@@ -44,6 +44,6 @@ export default function AboutApp(props: AboutAppProps) {
                     </a>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

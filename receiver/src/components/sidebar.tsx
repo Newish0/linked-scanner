@@ -23,6 +23,11 @@ export default function Sidebar(props: SidebarProps) {
             </div>
 
             <ul class="menu menu-sm w-full grow">
+                {/* <li class="pointer-events-none">
+                    <a class="aspect-square flex justify-center items-center p-1">
+                        <img src="/logoR192.png" class="size-9" />
+                    </a>
+                </li> */}
                 <For each={props.routes}>
                     {(route) => (
                         <li>

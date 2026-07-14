@@ -1,21 +1,9 @@
-import { makePersisted } from "@solid-primitives/storage";
 import AboutApp from "core/components/about-app";
 import ResetApp from "core/components/reset-app";
 import { Settings, type SettingSection } from "core/components/settings";
-import { deviceId, deviceName, setDeviceName } from "core/stores/device";
-import { createSignal } from "solid-js";
+import { deviceName, deviceId, setDeviceName } from "core/stores/device";
 
-export default function ScannerSettings() {
-    const [camContrast, setCamContrast] = makePersisted(createSignal(100), {
-        name: "camContrast",
-        storage: localStorage,
-    });
-
-    const [camBrightness, setCamBrightness] = makePersisted(createSignal(100), {
-        name: "camBrightness",
-        storage: localStorage,
-    });
-
+export default function ReceiverSettings() {
     const sections: SettingSection[] = [
         {
             title: "General",
@@ -38,35 +26,6 @@ export default function ScannerSettings() {
             ],
         },
         {
-            title: "Camera",
-            settings: [
-                {
-                    id: "cam-contrast",
-                    label: "Contrast",
-                    type: "slider",
-                    position: "inline",
-                    min: 0,
-                    max: 200,
-                    step: 10,
-                    value: camContrast(),
-                    onChange: setCamContrast,
-                    displayValue: () => `${camContrast()}%`,
-                },
-                {
-                    id: "cam-brightness",
-                    label: "Brightness",
-                    type: "slider",
-                    position: "inline",
-                    min: 0,
-                    max: 200,
-                    step: 10,
-                    value: camBrightness(),
-                    onChange: setCamBrightness,
-                    displayValue: () => `${camBrightness()}%`,
-                },
-            ],
-        },
-        {
             title: "Advanced",
             settings: [
                 {
@@ -84,12 +43,11 @@ export default function ScannerSettings() {
                 {
                     id: "about",
                     type: "custom",
-                    position: "inline",
                     render: () => (
                         <AboutApp
                             appName="Linked Scanner"
-                            appSuperName="scanner"
-                            shortDescription="Unleash your phone into a barcode scanner"
+                            appSuperName="receiver"
+                            shortDescription="Receive barcode scans on your desktop"
                             version={import.meta.env.VITE_APP_VERSION}
                             logo="logoR192.png"
                             license="MIT"

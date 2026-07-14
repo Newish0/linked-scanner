@@ -5,8 +5,12 @@ import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 
 import solidPlugin from "vite-plugin-solid";
+import pkg from "./package.json";
 
 export default defineConfig({
+    define: {
+        "import.meta.env.VITE_APP_VERSION": JSON.stringify(pkg.version),
+    },
     resolve: { tsconfigPaths: true },
     plugins: [
         devtools(),

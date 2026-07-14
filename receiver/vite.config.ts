@@ -6,12 +6,16 @@ import path from "path";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 
 import solidPlugin from "vite-plugin-solid";
+import pkg from "./package.json";
 
 // @ts-expect-error process is a nodejs global
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
 export default defineConfig(async () => ({
+    define: {
+        "import.meta.env.VITE_APP_VERSION": JSON.stringify(pkg.version),
+    },
     plugins: [
         devtools(),
         tailwindcss(),

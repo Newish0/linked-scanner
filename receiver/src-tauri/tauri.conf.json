@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "receiver",
+  "productName": "Linked Scanner Receiver",
   "version": "0.1.0",
   "identifier": "dev.hy1.lsreceiver",
   "build": {
@@ -12,9 +12,9 @@
   "app": {
     "windows": [
       {
-        "title": "receiver",
-        "width": 800,
-        "height": 600
+        "title": "Linked Scanner Receiver",
+        "width": 760,
+        "height": 540
       }
     ],
     "security": {
