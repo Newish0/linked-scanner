@@ -138,39 +138,3 @@ html:active-view-transition-type(slide-right) {
         animation: 700ms linear both tray-enter-left;
     }
 }
-
-/* Warp/Rotate Transition untouched by the tray styling above */
-html:active-view-transition-type(warp) {
-    &::view-transition-old(post) {
-        animation: 400ms ease-out both warp-out;
-    }
-
-    &::view-transition-new(post) {
-        animation: 400ms ease-out both warp-in;
-    }
-}
-
-@keyframes warp-out {
-    from {
-        opacity: 1;
-        filter: blur(0) brightness(1);
-        transform: scale(1) rotate(0deg);
-    }
-    to {
-        filter: blur(15px) brightness(1.8);
-        transform: scale(1.1) rotate(90deg);
-    }
-}
-
-@keyframes warp-in {
-    from {
-        opacity: 0;
-        filter: blur(15px) brightness(1.8);
-        transform: scale(0.9) rotate(-45deg);
-    }
-    to {
-        opacity: 1;
-        filter: blur(0) brightness(1);
-        transform: scale(1) rotate(0deg);
-    }
-}

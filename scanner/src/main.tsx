@@ -8,9 +8,7 @@ const router = createRouter({
   defaultPreload: 'intent',
   defaultPreloadStaleTime: 0,
   scrollRestoration: true,
-  defaultViewTransition: {
-    types: () => (['warp'])
-  }
+  defaultViewTransition: true
 })
 
 declare module '@tanstack/solid-router' {
