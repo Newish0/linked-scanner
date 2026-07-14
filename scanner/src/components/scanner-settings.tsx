@@ -1,21 +1,18 @@
-import { makePersisted } from "@solid-primitives/storage";
 import AboutApp from "core/components/about-app";
 import ResetApp from "core/components/reset-app";
 import { Settings, type SettingSection } from "core/components/settings";
 import { deviceId, deviceName, setDeviceName } from "core/stores/device";
 import { maxHistoryLength, setMaxHistoryLength } from "core/stores/history";
-import { createSignal } from "solid-js";
+import {
+    camBrightness,
+    camContrast,
+    scanRatio,
+    setCamBrightness,
+    setCamContrast,
+    setScanRatio,
+} from "@/stores/scanner-settings";
 
 export default function ScannerSettings() {
-    const [camContrast, setCamContrast] = makePersisted(createSignal(100), {
-        name: "camContrast",
-        storage: localStorage,
-    });
-
-    const [camBrightness, setCamBrightness] = makePersisted(createSignal(100), {
-        name: "camBrightness",
-        storage: localStorage,
-    });
 
     const sections: SettingSection[] = [
         {
@@ -41,6 +38,19 @@ export default function ScannerSettings() {
         {
             title: "Camera",
             settings: [
+                {
+                    id: "scan-ratio",
+                    label: "Scan Area Size",
+                    description: "Portion of the viewport used for scanning.",
+                    type: "slider",
+                    position: "inline",
+                    min: 0.3,
+                    max: 1,
+                    step: 0.05,
+                    value: scanRatio(),
+                    onChange: setScanRatio,
+                    displayValue: () => `${Math.round(scanRatio() * 100)}%`,
+                },
                 {
                     id: "cam-contrast",
                     label: "Contrast",

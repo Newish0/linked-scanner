@@ -11,13 +11,14 @@ interface CodeScannerProps {
     maxDecodeWidth?: number;
     contrast?: number;
     brightness?: number;
+    scanRatio?: number;
 }
 
 export default function CodeScanner(props: CodeScannerProps) {
     const codeReader = new BrowserMultiFormatReader(undefined);
 
     const finalProps = mergeProps(
-        { contrast: 100, brightness: 100, interval: 200, maxDecodeWidth: 640 },
+        { contrast: 100, brightness: 100, interval: 200, maxDecodeWidth: 640, scanRatio: 2 / 3 },
         props,
     );
 
@@ -49,8 +50,8 @@ export default function CodeScanner(props: CodeScannerProps) {
         const cw = container.clientWidth;
         const ch = container.clientHeight;
 
-        // ponytail: scan area = center 2/3 square of viewport, mapped to video coords
-        const dispSize = Math.round((2 / 3) * Math.min(cw, ch));
+        // ponytail: scan area = center square of viewport, ratio configurable
+        const dispSize = Math.round(finalProps.scanRatio * Math.min(cw, ch));
         const dispSx = Math.round((cw - dispSize) / 2);
         const dispSy = Math.round((ch - dispSize) / 2);
         setCropRect({ left: dispSx, top: dispSy, size: dispSize });

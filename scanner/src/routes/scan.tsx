@@ -4,24 +4,14 @@ import { DeviceList } from "@/components/device-list";
 import { createFileRoute } from "@tanstack/solid-router";
 import { connect, isConnected, sendScan } from "core/stores/peer-connection";
 import { getDeviceIdFromUrl } from "core/utils/scanner-url";
-import { createEffect, createSignal, onCleanup } from "solid-js";
-import { makePersisted } from "@solid-primitives/storage";
+import { createEffect, onCleanup } from "solid-js";
+import { camBrightness, camContrast, scanRatio } from "@/stores/scanner-settings";
 
 export const Route = createFileRoute("/scan")({
     component: RouteComponent,
 });
 
 function RouteComponent() {
-    const [camContrast] = makePersisted(createSignal(100), {
-        name: "camContrast",
-        storage: localStorage,
-    });
-
-    const [camBrightness] = makePersisted(createSignal(100), {
-        name: "camBrightness",
-        storage: localStorage,
-    });
-
     let isConnecting = false;
 
     let lastScannedCode = "";
@@ -85,6 +75,7 @@ function RouteComponent() {
                 onError={handleError}
                 brightness={camBrightness()}
                 contrast={camContrast()}
+                scanRatio={scanRatio()}
             />
 
             <DeviceList />
