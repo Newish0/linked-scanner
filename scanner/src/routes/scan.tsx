@@ -1,17 +1,10 @@
 import appToast from "core/components/app-toast";
 import CodeScanner from "@/components/code-scanner";
-import { IconDevices2 } from "@tabler/icons-solidjs";
+import { DeviceList } from "@/components/device-list";
 import { createFileRoute } from "@tanstack/solid-router";
-import {
-    connect,
-    connections,
-    getPeerName,
-    isConnected,
-    sendScan,
-} from "core/stores/peer-connection";
+import { connect, isConnected, sendScan } from "core/stores/peer-connection";
 import { getDeviceIdFromUrl } from "core/utils/scanner-url";
-import { cn } from "core/utils/tw";
-import { createEffect, createSignal, For, onCleanup } from "solid-js";
+import { createEffect, createSignal, onCleanup } from "solid-js";
 import { makePersisted } from "@solid-primitives/storage";
 
 export const Route = createFileRoute("/scan")({
@@ -94,31 +87,7 @@ function RouteComponent() {
                 contrast={camContrast()}
             />
 
-            <div class="fab inset-y-20 left-4 flex items-start">
-                <div class="indicator">
-                    <span class={cn("indicator-item badge badge-sm", "badge-secondary")}>
-                        {connections().length}
-                    </span>
-                    <div
-                        tabindex="0"
-                        role="button"
-                        class={cn(
-                            "btn btn-lg btn-circle",
-                            isConnected() ? "btn-success" : "btn-warning",
-                        )}
-                    >
-                        <IconDevices2 />
-                    </div>
-                </div>
-
-                <For each={connections()}>
-                    {(conn) => (
-                        <button class="btn">
-                            {getPeerName(conn.peer) || `Device ${conn.peer.slice(0, 6)}`}
-                        </button>
-                    )}
-                </For>
-            </div>
+            <DeviceList />
         </div>
     );
 }
