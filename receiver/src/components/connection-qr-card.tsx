@@ -33,7 +33,7 @@ export function ConnectionQRCard(props: ConnectionQRCardProps) {
                     ></div>
                     <img
                         src={qrCode()}
-                        class="relative size-72 m-1 rounded-box"
+                        class="relative size-84 m-1 rounded-box"
                         alt="Connection QR code"
                     />
                 </div>

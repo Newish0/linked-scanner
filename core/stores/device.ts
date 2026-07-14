@@ -1,12 +1,13 @@
 import { makePersisted } from "@solid-primitives/storage";
-import { nameFromId } from "../utils/names";
 import { createSignal } from "solid-js";
+import { nameFromId } from "../utils/names";
+import { compressUuid } from "../utils/uuid";
 
 const DEVICE_ID_KEY = "deviceId";
 const DEVICE_NAME_KEY = "deviceName";
 
 const storedDeviceId = localStorage.getItem(DEVICE_ID_KEY);
-const initialDeviceId = storedDeviceId ?? crypto.randomUUID();
+const initialDeviceId = storedDeviceId ?? compressUuid(crypto.randomUUID());
 if (!storedDeviceId) localStorage.setItem(DEVICE_ID_KEY, JSON.stringify(initialDeviceId));
 
 export const [deviceId] = makePersisted(createSignal(initialDeviceId), {
