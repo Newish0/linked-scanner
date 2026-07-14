@@ -19,7 +19,7 @@ function Home() {
     createEffect(on(doneOnboarding, onboardingRedirect));
 
     return (
-        <div class="fixed top-0 left-0 w-dvh h-dvh p-8">
+        <div class="fixed top-0 left-0 w-dvw h-dvh p-8">
             <OnboardingGuide onDone={handleDoneOnboarding} />
         </div>
     );
