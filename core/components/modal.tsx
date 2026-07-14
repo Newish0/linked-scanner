@@ -18,7 +18,7 @@ export function Modal(props: {
     });
 
     return (
-        <dialog ref={dialogRef} class="modal" onClose={props.onClose}>
+            <dialog ref={dialogRef} class="modal modal-bottom sm:modal-middle" onClose={props.onClose}>
             <div class="modal-box">
                 <form method="dialog">
                     <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
