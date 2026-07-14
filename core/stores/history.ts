@@ -22,8 +22,6 @@ type ConnectionEntry = {
 };
 export type HistoryEntry = ScanSentEntry | ScanReceivedEntry | ConnectionEntry;
 
-const MAX_HISTORY_LENGTH = 256;
-
 const idbStorage: AsyncStorage = {
     getItem: async (key: string) => (await get(key)) ?? null,
     setItem: (key: string, value: string) => set(key, value),
@@ -35,12 +33,17 @@ const [_history, _setHistory] = makePersisted(createSignal<HistoryEntry[]>([]), 
     storage: idbStorage,
 });
 
+export const [maxHistoryLength, setMaxHistoryLength] = makePersisted(createSignal(256), {
+    name: "maxHistoryLength",
+    storage: localStorage,
+});
+
 export const history = () => _history();
 
 const setHistory = (fn: (prev: HistoryEntry[]) => HistoryEntry[]) => {
     _setHistory((prev) => {
         const newHistory = fn(prev);
-        return newHistory.slice(-MAX_HISTORY_LENGTH);
+        return newHistory.slice(-maxHistoryLength());
     });
 };
 

@@ -3,6 +3,7 @@ import AboutApp from "core/components/about-app";
 import ResetApp from "core/components/reset-app";
 import { Settings, type SettingSection } from "core/components/settings";
 import { deviceId, deviceName, setDeviceName } from "core/stores/device";
+import { maxHistoryLength, setMaxHistoryLength } from "core/stores/history";
 import { createSignal } from "solid-js";
 
 export default function ScannerSettings() {
@@ -69,6 +70,19 @@ export default function ScannerSettings() {
         {
             title: "Advanced",
             settings: [
+                {
+                    id: "history-length",
+                    label: "History Length",
+                    description: "Max number of entries to keep in scan history.",
+                    type: "slider",
+                    position: "inline",
+                    min: 50,
+                    max: 500,
+                    step: 10,
+                    value: maxHistoryLength(),
+                    onChange: setMaxHistoryLength,
+                    displayValue: () => `${maxHistoryLength()} entries`,
+                },
                 {
                     id: "reset-app",
                     label: "Reset App",
