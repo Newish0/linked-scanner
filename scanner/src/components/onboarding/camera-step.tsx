@@ -26,10 +26,7 @@ export function CameraStep(props: { onNext: () => void }) {
                         <p class="text-sm text-base-content/60">
                             We need camera access to scan things for you.
                         </p>
-                        <button
-                            class="btn btn-primary btn-block mt-3"
-                            onClick={requestCamera}
-                        >
+                        <button class="btn btn-primary btn-block mt-3" onClick={requestCamera}>
                             Enable Camera
                         </button>
                     </Match>
@@ -37,10 +34,7 @@ export function CameraStep(props: { onNext: () => void }) {
                     <Match when={status() === "granted"}>
                         <IconCheck size={40} stroke-width={1.5} class="text-success" />
                         <h2 class="card-title">Camera enabled</h2>
-                        <button
-                            class="btn btn-primary btn-block mt-3"
-                            onClick={props.onNext}
-                        >
+                        <button class="btn btn-primary btn-block mt-3" onClick={props.onNext}>
                             Continue
                         </button>
                     </Match>
@@ -51,10 +45,7 @@ export function CameraStep(props: { onNext: () => void }) {
                         <p class="text-sm text-base-content/60">
                             Enable it in your browser settings, then retry.
                         </p>
-                        <button
-                            class="btn btn-primary btn-block mt-3"
-                            onClick={requestCamera}
-                        >
+                        <button class="btn btn-primary btn-block mt-3" onClick={requestCamera}>
                             Retry
                         </button>
                         <button class="btn btn-ghost btn-block" onClick={props.onNext}>

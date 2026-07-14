@@ -146,6 +146,10 @@ const registerConnection = (conn: DataConnection, peerId: string) => {
 
 // ===== event handlers =====
 
+const readyPromise = new Promise<void>((resolve) => {
+    peer.on("open", () => resolve());
+});
+
 peer.on("connection", (conn) => {
     conn.on("open", () => {
         registerConnection(conn, conn.peer);
@@ -174,13 +178,15 @@ export const offData = (cb: DataHandler) => {
 
 // ===== actions =====
 
-export const connect = (id: string, timeout = 30000) => {
+export const connect = async (id: string, timeout = 30000) => {
+    await readyPromise;
+
     const existingConnection = _connections().find((c) => c.peer === id);
     if (existingConnection) throw new Error("Already connected");
 
     return new Promise<DataConnection>((resolve, reject) => {
         const conn = peer.connect(id, {
-            metadata: { id: deviceId, name: undefined }, // TODO
+            metadata: { id: deviceId },
         });
 
         const timeoutId = setTimeout(() => {
@@ -196,14 +202,13 @@ export const connect = (id: string, timeout = 30000) => {
     });
 };
 
-const sendData = (data: Data) => {
-    for (const conn of _connections()) {
-        conn.send(data);
-    }
+const sendData = async (data: Data) => {
+    await readyPromise;
+    await Promise.all(_connections().map((conn) => conn.send(data)));
 };
 
-export const sendScan = (content: string) => {
-    sendData({
+export const sendScan = async (content: string) => {
+    await sendData({
         type: "scan",
         content,
     });

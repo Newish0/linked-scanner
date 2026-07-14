@@ -1,7 +1,7 @@
 import { createSignal, onMount, Show } from "solid-js";
 import QRCode from "qrcode";
 import { IconCheckFilled, IconQrcode } from "@tabler/icons-solidjs";
-import { getConnectionUrl, SCANNER_PWA_URL } from "core/utils/scanner-url";
+import { getConnectionUrl } from "core/utils/scanner-url";
 import { deviceId } from "core/stores/device";
 import { cn } from "core/utils/tw";
 
@@ -11,9 +11,10 @@ type ConnectionQRCardProps = {
 
 export function ConnectionQRCard(props: ConnectionQRCardProps) {
     const [qrCode, setQrCode] = createSignal("");
+    const connUrl = () => getConnectionUrl(deviceId());
 
     onMount(() => {
-        QRCode.toDataURL(getConnectionUrl(deviceId()), {
+        QRCode.toDataURL(connUrl(), {
             color: { dark: "#1d232a", light: "#ecfaff" },
         }).then(setQrCode);
     });
@@ -32,7 +33,7 @@ export function ConnectionQRCard(props: ConnectionQRCardProps) {
                     ></div>
                     <img
                         src={qrCode()}
-                        class="relative w-48 m-1 rounded-box"
+                        class="relative size-72 m-1 rounded-box"
                         alt="Connection QR code"
                     />
                 </div>
@@ -58,7 +59,7 @@ export function ConnectionQRCard(props: ConnectionQRCardProps) {
                         </p>
                         <p class="text-sm text-base-content/60">
                             Scan this QR code or visit{" "}
-                            <a href={SCANNER_PWA_URL} class="link link-primary">
+                            <a href={connUrl()} class="link link-primary">
                                 Linked Scanner
                             </a>{" "}
                             on your mobile device to connect

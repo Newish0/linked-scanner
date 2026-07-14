@@ -18,12 +18,13 @@
     "@tanstack/solid-router-devtools": "catalog:",
     "@zxing/browser": "0.2.0",
     "@zxing/library": "0.22.0",
+    "core": "workspace:*",
     "idb-keyval": "catalog:",
+    "peerjs": "catalog:",
     "solid-js": "catalog:",
     "solid-sonner": "catalog:",
     "tailwindcss": "catalog:",
-    "peerjs": "catalog:",
-    "core": "workspace:*"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@solidjs/testing-library": "^0.8.10",

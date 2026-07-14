@@ -1,9 +1,11 @@
-import { Outlet, createRootRoute } from "@tanstack/solid-router";
-import { TanStackRouterDevtools } from "@tanstack/solid-router-devtools";
 import AppDock, { type DockRoute } from "@/components/app-dock";
 import { IconHistory, IconScan, IconSettings } from "@tabler/icons-solidjs";
+import { Outlet, createRootRoute, useNavigate } from "@tanstack/solid-router";
+import { TanStackRouterDevtools } from "@tanstack/solid-router-devtools";
 import { Toaster } from "solid-sonner";
 
+import { doneOnboarding } from "@/stores/onboarding";
+import { createEffect, on, untrack } from "solid-js";
 import "../styles.css";
 
 export const Route = createRootRoute({
@@ -29,6 +31,16 @@ const appRoutes: DockRoute[] = [
 ];
 
 function RootComponent() {
+    const navigate = useNavigate();
+
+    const onboardingRedirect = (done: boolean) => {
+        if (!done) {
+            untrack(() => navigate({ to: "/" }));
+        }
+    };
+
+    createEffect(on(doneOnboarding, onboardingRedirect));
+
     return (
         <>
             <Toaster position="top-center" />

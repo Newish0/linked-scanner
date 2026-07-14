@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as HistoryRouteImport } from './routes/history'
+import { Route as ConnRouteImport } from './routes/conn'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SettingsRoute = SettingsRouteImport.update({
@@ -29,6 +30,11 @@ const HistoryRoute = HistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConnRoute = ConnRouteImport.update({
+  id: '/conn',
+  path: '/conn',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -37,12 +43,14 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/conn': typeof ConnRoute
   '/history': typeof HistoryRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/conn': typeof ConnRoute
   '/history': typeof HistoryRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/conn': typeof ConnRoute
   '/history': typeof HistoryRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/history' | '/scan' | '/settings'
+  fullPaths: '/' | '/conn' | '/history' | '/scan' | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/history' | '/scan' | '/settings'
-  id: '__root__' | '/' | '/history' | '/scan' | '/settings'
+  to: '/' | '/conn' | '/history' | '/scan' | '/settings'
+  id: '__root__' | '/' | '/conn' | '/history' | '/scan' | '/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ConnRoute: typeof ConnRoute
   HistoryRoute: typeof HistoryRoute
   ScanRoute: typeof ScanRoute
   SettingsRoute: typeof SettingsRoute
@@ -92,6 +102,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof HistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/conn': {
+      id: '/conn'
+      path: '/conn'
+      fullPath: '/conn'
+      preLoaderRoute: typeof ConnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,6 +121,7 @@ declare module '@tanstack/solid-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ConnRoute: ConnRoute,
   HistoryRoute: HistoryRoute,
   ScanRoute: ScanRoute,
   SettingsRoute: SettingsRoute,

@@ -1,4 +1,4 @@
-export const SCANNER_PWA_URL = `https://newish0.github.io/linked-scanner/scanner`;
+export const SCANNER_PWA_URL = `https://newish0.github.io/linked-scanner/scanner/conn`;
 
 export const getConnectionUrl = (deviceId: string) => `${SCANNER_PWA_URL}?id=${deviceId}`;
 

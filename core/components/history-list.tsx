@@ -16,6 +16,7 @@ import {
 } from "../stores/history";
 import { appToast } from "../components/app-toast";
 import { connect, sendScan, getPeerName } from "../stores/peer-connection";
+import { cn } from "../utils/tw";
 
 const timeFormatter = new Intl.DateTimeFormat(undefined, {
     hour: "2-digit",
@@ -96,8 +97,19 @@ function HistoryRow(props: { entry: HistoryEntry }) {
                     <span>{formatTimestamp(props.entry.timestamp)}</span>
                     <Show when={isScanSentHistory(props.entry) ? props.entry : undefined}>
                         {(entry) => (
-                            <span class="badge badge-soft badge-info badge-sm normal-case">
-                                sent to {entry().receiverIds.length} receivers
+                            <span
+                                class={cn("badge badge-soft badge-info badge-sm normal-case", {
+                                    "badge-warning": entry().receiverIds.length === 0,
+                                })}
+                            >
+                                <Switch fallback={<>No receiver</>}>
+                                    <Match when={entry().receiverIds.length === 1}>
+                                        1 receiver
+                                    </Match>
+                                    <Match when={entry().receiverIds.length > 1}>
+                                        {entry().receiverIds.length} receivers
+                                    </Match>
+                                </Switch>
                             </span>
                         )}
                     </Show>
