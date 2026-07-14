@@ -26,6 +26,11 @@ export default function CodeScanner(props: CodeScannerProps) {
         storage: localStorage,
     });
     const [devices, setDevices] = createSignal<MediaDeviceInfo[]>([]);
+    const [cropRect, setCropRect] = createSignal<{
+        left: number;
+        top: number;
+        size: number;
+    } | null>(null);
 
     let videoRef: HTMLVideoElement | undefined;
     let canvas: HTMLCanvasElement | undefined;
@@ -38,12 +43,37 @@ export default function CodeScanner(props: CodeScannerProps) {
         if (busy || !videoRef || !canvas || !ctx || videoRef.readyState < 2) return;
         busy = true;
 
-        const scale = Math.min(1, finalProps.maxDecodeWidth / videoRef.videoWidth);
-        canvas.width = videoRef.videoWidth * scale;
-        canvas.height = videoRef.videoHeight * scale;
+        const vw = videoRef.videoWidth;
+        const vh = videoRef.videoHeight;
+        const container = videoRef.parentElement!;
+        const cw = container.clientWidth;
+        const ch = container.clientHeight;
+
+        // ponytail: scan area = center 2/3 square of viewport, mapped to video coords
+        const dispSize = Math.round((2 / 3) * Math.min(cw, ch));
+        const dispSx = Math.round((cw - dispSize) / 2);
+        const dispSy = Math.round((ch - dispSize) / 2);
+        setCropRect({ left: dispSx, top: dispSy, size: dispSize });
+
+        const s = Math.max(cw / vw, ch / vh); // object-fit:cover scale
+        const videoSize = dispSize / s;
+
+        const scale = Math.min(1, finalProps.maxDecodeWidth / videoSize);
+        canvas.width = Math.round(videoSize * scale);
+        canvas.height = Math.round(videoSize * scale);
 
         ctx.filter = `contrast(${finalProps.contrast}%) brightness(${finalProps.brightness}%)`;
-        ctx.drawImage(videoRef, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(
+            videoRef,
+            (vw - videoSize) / 2,
+            (vh - videoSize) / 2,
+            videoSize,
+            videoSize,
+            0,
+            0,
+            canvas.width,
+            canvas.height,
+        );
         try {
             const decodeResult = await codeReader.decodeFromCanvas(canvas);
             // appToast.info(decodeResult.getText());
@@ -60,8 +90,23 @@ export default function CodeScanner(props: CodeScannerProps) {
 
     const startStream = async (deviceId: string | null) => {
         if (timer) clearInterval(timer);
+        const oldStream = videoRef?.srcObject as MediaStream | null;
+        oldStream?.getTracks().forEach((t) => t.stop());
+
         const stream = await navigator.mediaDevices.getUserMedia({
-            video: deviceId ? { deviceId: { exact: deviceId } } : true,
+            video: deviceId
+                ? {
+                      deviceId: { exact: deviceId },
+                      width: { ideal: 1920 },
+                      height: { ideal: 1080 },
+                      frameRate: { ideal: 30 },
+                  }
+                : {
+                      width: { ideal: 1920 },
+                      height: { ideal: 1080 },
+                      frameRate: { ideal: 30 },
+                      facingMode: "environment",
+                  },
         });
         if (videoRef) videoRef.srcObject = stream;
         timer = window.setInterval(tick, finalProps.interval);
@@ -109,9 +154,28 @@ export default function CodeScanner(props: CodeScannerProps) {
                 playsinline
             />
 
+            <Show when={cropRect()}>
+                {(rect) => (
+                    <div
+                        class="absolute pointer-events-none z-10 rounded-box"
+                        style={{
+                            left: `${rect().left}px`,
+                            top: `${rect().top}px`,
+                            width: `${rect().size}px`,
+                            height: `${rect().size}px`,
+                            "box-shadow": "0 0 0 9999px rgba(0,0,0,0.5)",
+                        }}
+                    />
+                )}
+            </Show>
+
             <Show when={devices().length > 1}>
                 <div class="fab inset-y-20">
-                    <div tabindex="0" role="button" class="btn btn-lg btn-circle btn-primary btn-soft">
+                    <div
+                        tabindex="0"
+                        role="button"
+                        class="btn btn-lg btn-circle btn-primary btn-soft"
+                    >
                         <IconCameraRotate />
                     </div>
                     <For each={devices()}>
