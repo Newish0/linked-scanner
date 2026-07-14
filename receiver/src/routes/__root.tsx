@@ -1,3 +1,4 @@
+import { NotFound, RouteError } from "core/components/route-fallback";
 import { IconDeviceCameraPhone, IconHistory, IconSettings } from "@tabler/icons-solidjs";
 import { Outlet, createRootRoute } from "@tanstack/solid-router";
 import { TanStackRouterDevtools } from "@tanstack/solid-router-devtools";
@@ -8,6 +9,8 @@ import { Toaster } from "solid-sonner";
 
 export const Route = createRootRoute({
     component: RootComponent,
+    notFoundComponent: NotFound,
+    errorComponent: RouteError,
 });
 
 const appRoutes: SidebarRoute[] = [

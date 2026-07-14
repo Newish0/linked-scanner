@@ -1,3 +1,4 @@
+import { NotFound, RouteError } from "core/components/route-fallback";
 import AppDock, { type DockRoute } from "@/components/app-dock";
 import { IconHistory, IconScan, IconSettings } from "@tabler/icons-solidjs";
 import { Outlet, createRootRoute, useMatchRoute, useNavigate } from "@tanstack/solid-router";
@@ -10,6 +11,8 @@ import "../styles.css";
 
 export const Route = createRootRoute({
     component: RootComponent,
+    notFoundComponent: NotFound,
+    errorComponent: RouteError,
 });
 
 const appRoutes: DockRoute[] = [
