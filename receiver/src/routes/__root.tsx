@@ -4,6 +4,7 @@ import { TanStackRouterDevtools } from "@tanstack/solid-router-devtools";
 import Sidebar, { type SidebarRoute } from "../components/sidebar";
 
 import "../styles.css";
+import { Toaster } from "solid-sonner";
 
 export const Route = createRootRoute({
     component: RootComponent,
@@ -30,6 +31,7 @@ const appRoutes: SidebarRoute[] = [
 function RootComponent() {
     return (
         <>
+            <Toaster position="bottom-right" />
             <Sidebar routes={appRoutes}>
                 <Outlet />
             </Sidebar>

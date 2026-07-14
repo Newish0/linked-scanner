@@ -1,6 +1,8 @@
 import { render } from "solid-js/web";
 import { RouterProvider, createRouter } from "@tanstack/solid-router";
 import { routeTree } from "./routeTree.gen";
+import { onData } from "core/stores/peer-connection";
+import { invoke } from "@tauri-apps/api/core";
 
 const router = createRouter({
     routeTree,
@@ -14,6 +16,12 @@ declare module "@tanstack/solid-router" {
         router: typeof router;
     }
 }
+
+onData((_conn, data) => {
+    if (data.type === "scan") {
+        invoke("fire_key_sequence", { keySequence: data.content });
+    }
+});
 
 const rootElement = document.getElementById("app")!;
 
