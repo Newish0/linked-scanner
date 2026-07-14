@@ -12,8 +12,7 @@ export function WelcomeStep(props: { onNext: () => void }) {
                     Your phone, now a barcode scanner for your PC.
                 </p>
                 <p class="text-sm text-base-content/60">
-                    Point your phone at QR codes and barcodes on your computer
-                    screen — no cables needed.
+                    Point your phone at QR codes and barcodes to scan them to your computer wirelessly.
                 </p>
                 <button class="btn btn-primary btn-block mt-2" onClick={props.onNext}>
                     Continue

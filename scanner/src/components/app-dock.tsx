@@ -22,6 +22,19 @@ export default function AppDock(props: DockProps) {
                         activeProps={{
                             class: "dock-active",
                         }}
+                        viewTransition={{
+                            types: ({ fromLocation, toLocation }) => {
+                                const fromIdx = props.routes.findIndex(
+                                    (r) => r.path === fromLocation?.pathname,
+                                );
+                                const toIdx = props.routes.findIndex(
+                                    (r) => r.path === toLocation?.pathname,
+                                );
+                                if (fromIdx === -1 || toIdx === -1) return [];
+                                if (fromIdx === toIdx) return [];
+                                return fromIdx > toIdx ? ["slide-right"] : ["slide-left"];
+                            },
+                        }}
                     >
                         <button class="flex flex-col justify-center items-center">
                             {route.icon}
