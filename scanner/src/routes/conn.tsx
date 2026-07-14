@@ -1,3 +1,4 @@
+import { doneOnboarding } from "@/stores/onboarding";
 import {
     IconAlertTriangle,
     IconCircleCheck,
@@ -50,7 +51,9 @@ function RouteComponent() {
             );
     };
 
-    if (peerId) {
+    if (!doneOnboarding()) {
+        navigate({ to: "/", search: { connId: peerId } });
+    } else if (peerId && doneOnboarding()) {
         connectToPeer();
     }
 

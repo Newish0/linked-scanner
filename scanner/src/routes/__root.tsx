@@ -1,6 +1,6 @@
 import AppDock, { type DockRoute } from "@/components/app-dock";
 import { IconHistory, IconScan, IconSettings } from "@tabler/icons-solidjs";
-import { Outlet, createRootRoute, useNavigate } from "@tanstack/solid-router";
+import { Outlet, createRootRoute, useMatchRoute, useNavigate } from "@tanstack/solid-router";
 import { TanStackRouterDevtools } from "@tanstack/solid-router-devtools";
 import { Toaster } from "solid-sonner";
 
@@ -32,10 +32,14 @@ const appRoutes: DockRoute[] = [
 
 function RootComponent() {
     const navigate = useNavigate();
+    const matchRoute = useMatchRoute();
 
     const onboardingRedirect = (done: boolean) => {
         if (!done) {
-            untrack(() => navigate({ to: "/" }));
+            untrack(() => {
+                if (matchRoute({ to: "/conn" })) return; // conn has its own redirect
+                navigate({ to: "/" });
+            });
         }
     };
 

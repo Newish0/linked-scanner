@@ -1,20 +1,30 @@
 import { OnboardingGuide } from "@/components/onboarding/onboarding-guide";
 import { doneOnboarding, setDoneOnboarding } from "@/stores/onboarding";
-import { createFileRoute, useNavigate } from "@tanstack/solid-router";
+import { createFileRoute } from "@tanstack/solid-router";
 
 import { createEffect, on, untrack } from "solid-js";
+import { z } from "zod";
 
-export const Route = createFileRoute("/")({ component: Home });
+const searchSchema = z.object({
+    connId: z.string().optional(),
+});
+
+export const Route = createFileRoute("/")({ component: Home, validateSearch: searchSchema });
 
 function Home() {
-    const navigate = useNavigate();
+    const search = Route.useSearch();
+    const navigate = Route.useNavigate();
 
     const handleDoneOnboarding = () => {
         setDoneOnboarding(true);
     };
 
     const onboardingRedirect = (done: boolean) => {
-        if (done) untrack(() => navigate({ to: "/scan" }));
+        if (done)
+            untrack(() => {
+                if (search().connId) navigate({ to: "/conn", search: { id: search().connId } });
+                else navigate({ to: "/scan" });
+            });
     };
     createEffect(on(doneOnboarding, onboardingRedirect));
 
