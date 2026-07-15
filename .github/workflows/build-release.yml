@@ -113,7 +113,6 @@ jobs:
             receiver-*/**/*.dmg
             receiver-*/**/*.msi
             receiver-*/**/*.exe
-            scanner-pwa/**
 
   deploy-pages:
     needs: build-pwa
