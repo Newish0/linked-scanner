@@ -20,13 +20,14 @@
     "@tanstack/solid-router-devtools": "catalog:",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
+    "core": "workspace:*",
     "idb-keyval": "catalog:",
+    "nanoid": "catalog:",
     "peerjs": "catalog:",
     "qrcode": "^1.5.4",
     "solid-js": "catalog:",
-    "tailwindcss": "catalog:",
-    "core": "workspace:*",
-    "solid-sonner": "catalog:"
+    "solid-sonner": "catalog:",
+    "tailwindcss": "catalog:"
   },
   "devDependencies": {
     "@tanstack/devtools-vite": "catalog:",

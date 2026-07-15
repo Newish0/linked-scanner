@@ -36,7 +36,15 @@ const [peerNames, setPeerNames] = makePersisted(createSignal<Map<string, string>
 });
 export const getPeerName = (peerId: string) => peerNames().get(peerId);
 
-const peer = new Peer(deviceId(), {});
+const peer = new Peer(deviceId(), {
+    config: {
+        iceServers: [
+            { urls: "stun:stun.cloudflare.com:3478" },
+            { urls: "stun:stun.l.google.com:19302" },
+            { urls: "stun:stun1.l.google.com:19302" },
+        ],
+    },
+});
 
 // Maps each user-supplied callback to the per-connection wrapper functions
 // actually registered on that connection, so we can remove the exact same
@@ -146,14 +154,27 @@ const registerConnection = (conn: DataConnection, peerId: string) => {
 
 // ===== event handlers =====
 
-const readyPromise = new Promise<void>((resolve) => {
+const readyPromise = new Promise<void>((resolve, reject) => {
     peer.on("open", () => resolve());
+    peer.on("error", (err) => reject(err));
 });
 
 peer.on("connection", (conn) => {
     conn.on("open", () => {
         registerConnection(conn, conn.peer);
     });
+});
+
+peer.on("error", (err) => {
+    console.error("[peerjs] error:", err.type, err);
+});
+
+peer.on("disconnected", () => {
+    console.warn("[peerjs] disconnected from signaling server");
+});
+
+peer.on("close", () => {
+    console.warn("[peerjs] peer destroyed");
 });
 
 export const onData = (cb: DataHandler) => {

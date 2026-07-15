@@ -21,6 +21,7 @@
     "@zxing/library": "0.22.0",
     "core": "workspace:*",
     "idb-keyval": "catalog:",
+    "nanoid": "catalog:",
     "peerjs": "catalog:",
     "solid-js": "catalog:",
     "solid-sonner": "catalog:",

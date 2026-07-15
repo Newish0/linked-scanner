@@ -18,6 +18,7 @@ catalog:
     tailwind-merge: ^3.6.0
     clsx: ^2.1.1
     solid-sonner: "^0.3.1"
+    nanoid: ^6.0.0
 
     # shared devDependencies
     "@tanstack/devtools-vite": latest

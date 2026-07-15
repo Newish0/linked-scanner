@@ -16,6 +16,7 @@
     "peerjs": "catalog:",
     "tailwind-merge": "catalog:",
     "clsx": "catalog:",
+    "nanoid": "catalog:",
     "idb-keyval": "catalog:",
     "solid-sonner": "catalog:",
     "@tabler/icons-solidjs": "catalog:"
