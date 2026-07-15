@@ -1,14 +1,6 @@
-
-
-
-
-
-
-
 <h1 align='center'>
   Linked Scanner
 </h1>
-
 
 <p align="center">
 A lightweight application that turns your smartphone into a wireless barcode scanner for your computer. The app establishes a peer-to-peer connection between your phone and computer, allowing you to seamlessly scan barcodes using your phone's camera and have the results automatically inputted on your computer.
@@ -26,67 +18,70 @@ A lightweight application that turns your smartphone into a wireless barcode sca
     </a>&nbsp;&nbsp;
 </p>
 
-
 <br />
 
+## Getting Started
 
+### Installation
 
-## Getting Started 
+Install the desktop app (Receiver) via the [release page](https://github.com/Newish0/linked-scanner/releases).
 
-### Installation 
+| [Windows installer](https://github.com/newish0/linked-scanner/releases/latest/) | [macOS (Apple Silicon) installer](https://github.com/newish0/linked-scanner/releases/latest/) |
+| :-----------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------: |
 
-Install the desktop application via the the [release page](https://github.com/Newish0/linked-scanner/releases) or try the links below. 
+Open the Scanner PWA on a mobile device.
 
-| [Windows installer](https://github.com/newish0/linked-scanner/releases/latest/) | [Apple Silicon Mac installer](https://github.com/newish0/linked-scanner/releases/latest/) |
-| :---------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------: |
+| [Scanner Web App](https://newish0.github.io/linked-scanner/scanner) |
+| :-----------------------------------------------------------------: |
 
-Open the web app on a mobile device.
+## Key Features
 
-| [PWA Web App](https://newish0.github.io/linked-scanner/client) |
-| :------------------------------------------------------------: |
-
-## Key Features 
-- **Wireless Scanning**: Scan barcodes using your smartphone's camera, eliminating the need for a physical barcode scanner device.
-- **Plug and Play**: Simple setup process with no additional hardware required. Just install the app on your phone and computer, and you're ready to go.
-- **Cross-Platform Compatibility**: Works on Windows, macOS, and Linux, ensuring flexibility across different operating systems.
-- **Blazing Fast Connection**: Utilizes a secure peer-to-peer connection for data transfer, ensuring the minimal latency from scan.
-
+- **Wireless Scanning**: Use phone camera as barcode scanner - no extra hardware needed.
+- **Plug and Play**: Install Receiver on desktop, open Scanner on phone, scan QR code to pair.
+- **Cross-Platform**: Windows, macOS, Linux desktop (Tauri) + PWA on any mobile browser.
+- **Peer-to-Peer**: Direct connection via WebRTC (PeerJS) for low-latency scans.
 
 ## Development
 
-### Project Structure 
-The repo contains two separate applications: 
-1. Desktop app in the `host` sub directory
-2. PWA mobile app in the `client` sub directory
+### Prerequisites
 
-All code shared between the two (i.e types) are in the `shared` directory.
+- [pnpm](https://pnpm.io/)
+- [Rust](https://rustup.rs/) (for Tauri desktop app)
 
-#### Developing the Desktop App
+### Project Structure
 
-```bash
-git clone https://github.com/Newish0/linked-scanner.git
-```
+The repo is a pnpm workspace monorepo with three packages:
 
-```bash
-cd host
-npm i
-npm run tauri dev
-```
+1. **`receiver/`** - Desktop app (Tauri + SolidJS)
+2. **`scanner/`** - PWA mobile app (SolidJS)
+3. **`core/`** - Shared components, stores, and utilities
 
-The desktop app uses Tauri with Vite + React + Tailwind (DaisyUI). 
-
-#### Developing the PWA Mobile App
+### Quick Start
 
 ```bash
 git clone https://github.com/Newish0/linked-scanner.git
+cd linked-scanner
+pnpm install
 ```
 
+#### Developing the Desktop App (Receiver)
+
 ```bash
-cd client
-npm i
-npm run dev
+cd receiver
+pnpm tauri dev
 ```
-The PWA uses Vite + React + Tailwind (DaisyUI). 
+
+Uses Tauri v2 with SolidJS + Tailwind (DaisyUI) + TanStack Router.
+
+#### Developing the PWA Mobile App (Scanner)
+
+```bash
+cd scanner
+pnpm dev
+```
+
+Uses SolidJS + Tailwind (DaisyUI) + TanStack Router + ZXing for barcode scanning.
 
 ### Contributing
+
 Contributions are welcome! If you find a bug or have an idea for an improvement, please open an issue or submit a pull request.

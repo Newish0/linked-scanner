@@ -1,8 +1,23 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"name": "Root",
+			"path": "./"
+		},
+		{
+			"name": "Core",
+			"path": "./core"
+		},
+		{
+			"name": "Scanner",
+			"path": "./scanner"
+		},
+		{
+			"name": "Receiver",
+			"path": "./receiver"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"editor.tabSize": 4,
+	}
 }

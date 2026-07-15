@@ -1,0 +1,140 @@
+@import "tailwindcss";
+@source "../../core/components/";
+@plugin "daisyui";
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+}
+
+/* ===== View transitions ===== */
+
+main {
+    view-transition-name: main-content;
+}
+
+/* Respect reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(main-content),
+    ::view-transition-old(main-content),
+    ::view-transition-new(main-content) {
+        animation: none !important;
+    }
+}
+
+/* Everything below only exists while the tray transition is active,
+   so it can't leak into warp or any other transition type. */
+html:active-view-transition-type(slide-left, slide-right) {
+    /* Backdrop the shrunk frame sits on while both cards are visible */
+    &::view-transition {
+        @apply bg-base-200;
+    }
+
+    &::view-transition-old(main-content),
+    &::view-transition-new(main-content) {
+        mix-blend-mode: normal;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+        @apply bg-base-100;
+    }
+
+    /* Explicit stacking - don't leave paint order to chance */
+    &::view-transition-new(main-content) {
+        z-index: 1;
+    }
+    &::view-transition-old(main-content) {
+        z-index: 0;
+    }
+}
+
+/* Slide left (forward) */
+@keyframes tray-exit-left {
+    0% {
+        transform: scale(1) translateX(0);
+        border-radius: 0;
+    }
+    20% {
+        transform: scale(0.95) translateX(0);
+        border-radius: 22px;
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    100% {
+        transform: scale(0.95) translateX(-130%);
+        border-radius: 22px;
+    }
+}
+@keyframes tray-enter-right {
+    0% {
+        transform: scale(0.95) translateX(130%);
+        border-radius: 22px;
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    80% {
+        transform: scale(0.95) translateX(0);
+        border-radius: 22px;
+        animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    100% {
+        transform: scale(1) translateX(0);
+        border-radius: 0;
+    }
+}
+
+/* Slide right (back) */
+@keyframes tray-exit-right {
+    0% {
+        transform: scale(1) translateX(0);
+        border-radius: 0;
+    }
+    20% {
+        transform: scale(0.95) translateX(0);
+        border-radius: 22px;
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    100% {
+        transform: scale(0.95) translateX(130%);
+        border-radius: 22px;
+    }
+}
+@keyframes tray-enter-left {
+    0% {
+        transform: scale(0.95) translateX(-130%);
+        border-radius: 22px;
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    80% {
+        transform: scale(0.95) translateX(0);
+        border-radius: 22px;
+        animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    100% {
+        transform: scale(1) translateX(0);
+        border-radius: 0;
+    }
+}
+
+html:active-view-transition-type(slide-left) {
+    &::view-transition-old(main-content) {
+        animation: 700ms linear both tray-exit-left;
+    }
+    &::view-transition-new(main-content) {
+        animation: 700ms linear both tray-enter-right;
+    }
+}
+
+html:active-view-transition-type(slide-right) {
+    &::view-transition-old(main-content) {
+        animation: 700ms linear both tray-exit-right;
+    }
+    &::view-transition-new(main-content) {
+        animation: 700ms linear both tray-enter-left;
+    }
+}

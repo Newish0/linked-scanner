@@ -1,0 +1,42 @@
+{
+  "name": "scanner",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "generate-routes": "tsr generate",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@solid-primitives/storage": "catalog:",
+    "@tabler/icons-solidjs": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "@tanstack/router-plugin": "catalog:",
+    "@tanstack/solid-router": "catalog:",
+    "@tanstack/solid-router-devtools": "catalog:",
+    "@zxing/browser": "0.2.0",
+    "@zxing/library": "0.22.0",
+    "core": "workspace:*",
+    "idb-keyval": "catalog:",
+    "peerjs": "catalog:",
+    "solid-js": "catalog:",
+    "solid-sonner": "catalog:",
+    "tailwindcss": "catalog:",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@solidjs/testing-library": "^0.8.10",
+    "@tanstack/devtools-vite": "catalog:",
+    "@tanstack/router-cli": "catalog:",
+    "@tanstack/router-plugin": "catalog:",
+    "daisyui": "catalog:",
+    "jsdom": "^28.1.0",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-plugin-solid": "catalog:",
+    "vitest": "catalog:"
+  }
+}
