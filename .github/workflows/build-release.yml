@@ -74,9 +74,14 @@ jobs:
         env:
           VITE_BASE_PATH: /linked-scanner/scanner/
 
+      - name: prepare pages artifact
+        run: |
+          mkdir -p _site/scanner
+          cp -r scanner/dist/* _site/scanner/
+          cp -r landing/* _site/
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: scanner/dist
+          path: _site
           name: github-pages
 
       - uses: actions/upload-artifact@v4

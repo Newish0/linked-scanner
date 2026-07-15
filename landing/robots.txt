@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://newish0.github.io/linked-scanner/sitemap.xml

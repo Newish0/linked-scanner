@@ -15,9 +15,14 @@
 		{
 			"name": "Receiver",
 			"path": "./receiver"
+		},
+		{
+			"name": "Landing",
+			"path": "./landing"
 		}
 	],
 	"settings": {
 		"editor.tabSize": 4,
+		"liveServer.settings.multiRootWorkspaceName": "Root",
 	}
 }

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linked Scanner — Turn Your Phone into a Wireless Barcode Scanner</title>
+  <meta name="description"
+    content="Linked Scanner turns your smartphone into a wireless barcode scanner for your computer. Free, open-source, peer-to-peer, cross-platform (Windows, macOS, Linux). No extra hardware needed.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0b0c10">
+  <link rel="canonical" href="https://newish0.github.io/linked-scanner/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://newish0.github.io/linked-scanner/">
+  <meta property="og:title" content="Linked Scanner — Turn Your Phone into a Wireless Barcode Scanner">
+  <meta property="og:description"
+    content="Free, open-source app that turns your smartphone into a wireless barcode scanner for your computer. Peer-to-peer, cross-platform, no extra hardware needed.">
+  <meta property="og:image" content="https://newish0.github.io/linked-scanner/logoR512.png">
+  <meta property="og:site_name" content="Linked Scanner">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Linked Scanner — Turn Your Phone into a Wireless Barcode Scanner">
+  <meta name="twitter:description"
+    content="Free, open-source app that turns your smartphone into a wireless barcode scanner for your computer.">
+  <meta name="twitter:image" content="https://newish0.github.io/linked-scanner/logoR512.png">
+
+  <link rel="icon" href="favicon.ico">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2/tabler-icons.min.css">
+  <style>
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Linked Scanner",
+    "description": "A lightweight application that turns your smartphone into a wireless barcode scanner for your computer, using a peer-to-peer connection.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Windows, macOS, Linux, Android, iOS",
+    "url": "https://newish0.github.io/linked-scanner/",
+    "image": "https://newish0.github.io/linked-scanner/logoR512.png",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "downloadUrl": "https://github.com/newish0/linked-scanner/releases",
+    "softwareHelp": "https://github.com/newish0/linked-scanner",
+    "author": {
+      "@type": "Person",
+      "name": "newish0"
+    }
+  }
+  </script>
+</head>
+
+<body class="min-h-screen bg-base-100">
+  <div class="max-w-3xl mx-auto px-5">
+
+    <header class="text-center pt-20 pb-10">
+      <div class="inline-flex items-center gap-4 mb-1 text-left">
+        <img src="logoR512.png" alt="Linked Scanner logo" class="size-28">
+        <div>
+          <h1 class="text-primary text-6xl font-bold leading-12 tracking-tight">
+            Linked Scanner
+            <sup class="align-top text-base font-normal leading-12 ml-1">Scanner + Receiver</sup>
+          </h1>
+          <p class="text-base text-base-content/70 ml-1">Wireless barcode scanning, phone to desktop</p>
+        </div>
+      </div>
+      <p class="text-base-content/70 max-w-md mx-auto mt-6 mb-8">
+        Turn your phone into a wireless barcode scanner for your computer.
+        No extra hardware, no wires — just point, scan, done.
+      </p>
+      <div class="flex gap-3 justify-center flex-wrap">
+        <a class="btn btn-primary" href="https://newish0.github.io/linked-scanner/scanner">
+          <i class="ti ti-qrcode text-lg"></i> Launch Scanner
+        </a>
+        <a class="btn btn-outline" href="#download">
+          <i class="ti ti-download text-lg"></i> Download Receiver
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/newish0/linked-scanner">
+          <i class="ti ti-brand-github text-lg"></i> GitHub
+        </a>
+      </div>
+    </header>
+
+    <section id="download" class="py-9">
+      <div class="card bg-base-200 border border-base-300">
+        <div class="card-body">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div>
+              <h2 class="card-title"><i class="ti ti-device-desktop"></i> Download Receiver</h2>
+              <p class="text-base-content/70">
+                The desktop app that pairs with the Scanner PWA over a peer-to-peer connection.
+              </p>
+            </div>
+            <div class="flex flex-col items-stretch sm:items-end gap-1.5 shrink-0 grow-1 min-w-1/3">
+              <div class="flex gap-2">
+                <select id="os-select" class="select select-bordered grow sm:grow-0">
+                  <option value="windows">Windows</option>
+                  <option value="mac-arm64">macOS (Apple Silicon)</option>
+                  <option value="mac-x86_64">macOS (Intel)</option>
+                  <option value="linux">Linux</option>
+                </select>
+                <button class="btn btn-primary" id="download-btn">
+                  <i class="ti ti-download"></i> Download
+                </button>
+              </div>
+              <div class="text-sm text-base-content/60" id="status">Detecting latest release…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-9">
+      <h2 class="sr-only">Features</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="card bg-base-200 border border-base-300">
+          <div class="card-body">
+            <i class="ti ti-wifi text-2xl text-primary"></i>
+            <h3 class="font-semibold">Wireless Scanning</h3>
+            <p class="text-sm text-base-content/70">Use your phone's camera as a barcode scanner — no extra hardware
+              needed.</p>
+          </div>
+        </div>
+        <div class="card bg-base-200 border border-base-300">
+          <div class="card-body">
+            <i class="ti ti-plug text-2xl text-primary"></i>
+            <h3 class="font-semibold">Plug and Play</h3>
+            <p class="text-sm text-base-content/70">Install Receiver on desktop, open Scanner on phone, scan a QR code
+              to pair.</p>
+          </div>
+        </div>
+        <div class="card bg-base-200 border border-base-300">
+          <div class="card-body">
+            <i class="ti ti-devices text-2xl text-primary"></i>
+            <h3 class="font-semibold">Cross-Platform</h3>
+            <p class="text-sm text-base-content/70">Windows, macOS, and Linux desktop app + a PWA that runs in any
+              mobile browser.</p>
+          </div>
+        </div>
+        <div class="card bg-base-200 border border-base-300">
+          <div class="card-body">
+            <i class="ti ti-broadcast text-2xl text-primary"></i>
+            <h3 class="font-semibold">Peer-to-Peer</h3>
+            <p class="text-sm text-base-content/70">Direct WebRTC connection (PeerJS) for a fast, low-latency scanning
+              experience.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="text-center py-14 text-sm text-base-content/50">
+      <a href="https://github.com/newish0/linked-scanner" class="link link-hover">github.com/newish0/linked-scanner</a>
+    </footer>
+  </div>
+
+  <script>
+    // ponytail: one GH API call, no build step / no framework
+    const REPO = "newish0/linked-scanner";
+    const OS_MATCH = {
+      windows: /\.(exe|msi)$/i,
+      "mac-arm64": /aarch64.*\.dmg$/i,
+      "mac-x86_64": /x64.*\.dmg$/i,
+      linux: /\.(appimage|deb)$/i,
+    };
+
+    function detectOS() {
+      const ua = navigator.userAgent;
+      if (/Mac/.test(ua)) return ua.includes("ARM64") ? "mac-arm64" : "mac-x86_64";
+      if (/Win/.test(ua)) return "windows";
+      if (/Linux/.test(ua)) return "linux";
+      return "windows";
+    }
+
+    const select = document.getElementById("os-select");
+    const statusEl = document.getElementById("status");
+    const downloadBtn = document.getElementById("download-btn");
+    select.value = detectOS();
+
+    let assets = [];
+
+    async function loadRelease() {
+      try {
+        const res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`);
+        if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+        const data = await res.json();
+        assets = data.assets || [];
+        statusEl.textContent = `Latest version: ${data.tag_name}`;
+      } catch (e) {
+        statusEl.textContent = "Couldn't fetch latest release — check the GitHub releases page instead.";
+        statusEl.classList.add("text-error");
+      }
+    }
+
+    function findAsset(os) {
+      return assets.find(a => OS_MATCH[os].test(a.name));
+    }
+
+    downloadBtn.addEventListener("click", () => {
+      const os = select.value;
+      const asset = findAsset(os);
+      window.location.href = asset ? asset.browser_download_url : `https://github.com/${REPO}/releases/latest`;
+    });
+
+    loadRelease();
+  </script>
+</body>
+
+</html>
