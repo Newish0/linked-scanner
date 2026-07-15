@@ -52,7 +52,7 @@ function RootComponent() {
         <>
             <Toaster position="top-center" />
 
-            <main class="h-[calc(100vh-64px)] overflow-auto">
+            <main class="h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] overflow-auto">
                 <Outlet />
             </main>
 

@@ -171,7 +171,7 @@ export default function CodeScanner(props: CodeScannerProps) {
             </Show>
 
             <Show when={devices().length > 1}>
-                <div class="fab inset-y-20">
+                <div class="fab top-20 bottom-[calc(4rem+env(safe-area-inset-bottom)+0.75rem)]">
                     <div
                         tabindex="0"
                         role="button"

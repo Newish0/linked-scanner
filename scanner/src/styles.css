@@ -37,6 +37,8 @@ html:active-view-transition-type(slide-left, slide-right) {
     /* Backdrop the shrunk frame sits on while both cards are visible */
     &::view-transition {
         @apply bg-base-200;
+        /* Let clicks through to dock so it stays tappable during transition */
+        pointer-events: none;
     }
 
     &::view-transition-old(main-content),

@@ -10,7 +10,7 @@ export function DeviceList() {
 
     return (
         <>
-            <div class="fab inset-y-20 left-4 flex items-start">
+            <div class="fab top-20 bottom-[calc(4rem+env(safe-area-inset-bottom)+0.75rem)] left-4 flex items-start">
                 <div class="indicator">
                     <span class={cn("indicator-item badge badge-sm", "badge-secondary")}>
                         {connections().length}
