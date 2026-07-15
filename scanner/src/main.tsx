@@ -1,9 +1,12 @@
 import { render } from 'solid-js/web'
-import { RouterProvider, createRouter } from '@tanstack/solid-router'
+import { RouterProvider, createHashHistory, createRouter } from '@tanstack/solid-router'
 import { routeTree } from './routeTree.gen'
+
+const hashHistory = createHashHistory()
 
 const router = createRouter({
   basepath: (import.meta.env.VITE_BASE_PATH || '').replace(/\/$/, '') || undefined,
+  history: hashHistory,
   routeTree,
   defaultPreload: 'intent',
   defaultPreloadStaleTime: 0,

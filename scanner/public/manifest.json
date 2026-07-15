@@ -18,10 +18,10 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "/",
+  "start_url": "/linked-scanner/scanner/",
   "display": "standalone",
-  "id": "/",
-  "scope": "/",
+  "id": "/linked-scanner/scanner/",
+  "scope": "/linked-scanner/scanner/",
   "theme_color": "#6463f4",
   "background_color": "#1b222b"
 }

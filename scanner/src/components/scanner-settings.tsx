@@ -115,7 +115,7 @@ export default function ScannerSettings() {
                             appSuperName="scanner"
                             shortDescription="Unleash your phone into a barcode scanner"
                             version={import.meta.env.VITE_APP_VERSION}
-                            logo="logoR192.png"
+                            logo={import.meta.env.BASE_URL + "logoR192.png"}
                             license="MIT"
                             licenseUrl="https://github.com/Newish0/linked-scanner/blob/main/LICENSE"
                             githubUrl="https://github.com/Newish0/linked-scanner"

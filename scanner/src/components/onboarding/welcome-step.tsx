@@ -3,7 +3,7 @@ export function WelcomeStep(props: { onNext: () => void }) {
         <div class="card card-border bg-base-100">
             <div class="card-body items-center gap-3 text-center">
                 <img
-                    src="/logoR192.png"
+                    src={import.meta.env.BASE_URL + "logoR192.png"}
                     alt="Linked Scanner"
                     class="size-24"
                 />
