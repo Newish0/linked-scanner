@@ -105,7 +105,6 @@
                 <select id="os-select" class="select select-bordered grow sm:grow-0">
                   <option value="windows">Windows</option>
                   <option value="mac-arm64">macOS (Apple Silicon)</option>
-                  <option value="mac-x86_64">macOS (Intel)</option>
                   <option value="linux">Linux</option>
                 </select>
                 <button class="btn btn-primary" id="download-btn">
@@ -168,13 +167,12 @@
     const OS_MATCH = {
       windows: /\.(exe|msi)$/i,
       "mac-arm64": /aarch64.*\.dmg$/i,
-      "mac-x86_64": /x64.*\.dmg$/i,
       linux: /\.(appimage|deb)$/i,
     };
 
     function detectOS() {
       const ua = navigator.userAgent;
-      if (/Mac/.test(ua)) return ua.includes("ARM64") ? "mac-arm64" : "mac-x86_64";
+      if (/Mac/.test(ua)) return "mac-arm64";
       if (/Win/.test(ua)) return "windows";
       if (/Linux/.test(ua)) return "linux";
       return "windows";

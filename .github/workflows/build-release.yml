@@ -13,8 +13,6 @@ jobs:
         include:
           - os: windows-latest
             arch: x86_64
-          - os: macos-13
-            arch: x86_64
           - os: macos-14
             arch: arm64
           - os: ubuntu-24.04
@@ -48,7 +46,7 @@ jobs:
         run: pnpm --filter receiver tauri build
 
       - name: upload bundles
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: receiver-${{ matrix.os }}-${{ matrix.arch }}
           path: receiver/src-tauri/target/release/bundle/*
@@ -84,7 +82,7 @@ jobs:
           path: _site
           name: github-pages
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: scanner-pwa
           path: scanner/dist
@@ -95,7 +93,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
 
       - name: draft release
         uses: softprops/action-gh-release@v3
@@ -117,4 +115,4 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
